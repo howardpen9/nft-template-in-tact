@@ -1,0 +1,140 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+(slice, ((int))) __gen_read_Add(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 3310826759);
+    var v'amount = sc~load_uint(32);
+    return (sc, (v'amount));
+}
+
+builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
+    var (v'owner, v'counter) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_uint(build_0, v'counter, 32);
+    return build_0;
+}
+
+(slice, ((slice, int))) __gen_read_SampleTactContract(slice sc) inline {
+    var v'owner = sc~__tact_load_address();
+    var v'counter = sc~load_uint(32);
+    return (sc, (v'owner, v'counter));
+}
+
+(slice, int) __gen_load_SampleTactContract() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_SampleTactContract();
+}
+
+() __gen_store_SampleTactContract((slice, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_SampleTactContract(b, v);
+    set_data(b.end_cell());
+}
+
+cell __gen_SampleTactContract_init(cell sys', slice owner) {
+    var ((self'owner, self'counter)) = (null(), null());
+    self'owner = owner;
+    self'counter = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SampleTactContract(b', (self'owner, self'counter));
+    return b'.end_cell();
+}
+
+((slice, int), ()) __gen_SampleTactContract_add((slice, int) self, int v) impure {
+    var ((self'owner, self'counter)) = self;
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
+    throw_unless(100, __tact_address_eq(ctx'sender, self'owner));
+    self'counter = (self'counter + v);
+    return ((self'owner, self'counter), ());
+}
+
+int __gen_SampleTactContract_counter((slice, int) self) impure {
+    var ((self'owner, self'counter)) = self;
+    return self'counter;
+}
+
+_ __gen_get_counter() method_id(104984) {
+    var self = __gen_load_SampleTactContract();
+    var res = __gen_SampleTactContract_counter(self);
+    return res;
+}
+
+(((slice, int)), ()) __gen_SampleTactContract_receive_Add((slice, int) self, (int) msg) impure {
+    var (self'owner, self'counter) = self;
+    var (msg'amount) = msg;
+    (self'owner, self'counter)~__gen_SampleTactContract_add(msg'amount);
+    return ((self'owner, self'counter), ());
+}
+
+((slice, int), ()) __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae((slice, int) self) impure {
+    var (self'owner, self'counter) = self;
+    (self'owner, self'counter)~__gen_SampleTactContract_add(1);
+    return ((self'owner, self'counter), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Add message
+    if (op == 3310826759) {
+        var self = __gen_load_SampleTactContract();
+        var msg = in_msg~__gen_read_Add();
+        self~__gen_SampleTactContract_receive_Add(msg);
+        __gen_store_SampleTactContract(self);
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "increment" message
+        if (text_op == 0xc4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae) {
+            var self = __gen_load_SampleTactContract();
+            self~__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae();
+            __gen_store_SampleTactContract(self);
+            return ();
+        }
+    }
+    
+    throw(100);
+}
+
+cell init_SampleTactContract(cell sys', slice owner) method_id {
+    return __gen_SampleTactContract_init(sys', owner);
+}
