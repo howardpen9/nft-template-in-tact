@@ -2574,15 +2574,15 @@ ton-crypto@^3.2.0:
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
 
-ton-nodejs@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.2.tgz#7fa16bbff2b81481006ea807ab9b6d20f1fdc836"
-  integrity sha512-hjSn2l0O8QO9+dhldth/+lJKpG1NMKQitQ/CxAp9r7qD/cHcN5VdtevacNjXReajtj3ihlwwZYEZcZXOyo7xzw==
+ton-nodejs@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.3.tgz#10c4f993fbd717a925007f63e744f6a9e3868555"
+  integrity sha512-Thwl2lmYuaaciFs0CTybb0ZPwscl0ANUriv3QUP494ttRWKT2rxoyydnepVw1hWDzXeDh3Rxn0XA7vN1hySVyg==
 
-ton-tact@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.0.4.tgz#338348f6c43ce3a0b0fe8dd6309ae08fb90d1b03"
-  integrity sha512-0hMP5E9zNlb9fViz/pAfssd2SjRrwwZFmU0Bn3zKO7hLUxZjhkD48GBVEwKo0jnGPRqXPUJoBbXpJ66VlGdkiA==
+ton-tact@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.1.0.tgz#cc8d44001f695ec7403e598cb5a07e8ee891703f"
+  integrity sha512-zqAgl0rYiU2f5g5/8PAj1YTHtmQOd8dIhDAf3Ag5CWTpoFBwhjF4m7wmH3ECOVEJPRqpOQFIS/iEJdtnGPPhDQ==
   dependencies:
     "@types/bn.js" "^5.1.1"
     arg "^5.0.2"
@@ -2591,35 +2591,18 @@ ton-tact@^0.0.4:
     ohm-js "^16.4.0"
     ora "^6.1.2"
     prando "^6.0.1"
-    ton "^12.1.5"
+    ton "12.2.8"
     ton-compiler "^2.0.0"
     ton-contract-executor "^0.6.0"
     ton-crypto "^3.2.0"
-    ton-nodejs "^1.4.2"
+    ton-nodejs "^1.4.3"
     tvm-disassembler "^1.2.1"
     zod "^3.20.2"
 
-ton@^12.1.5:
-  version "12.1.5"
-  resolved "https://registry.yarnpkg.com/ton/-/ton-12.1.5.tgz#8d4d1857ce1887af565d9b657b05dca361db27d3"
-  integrity sha512-wuk/HSiaVHocTY/r0oZUF7+RgBqQANu4MHGr9Wm2+7EqoseBFKRsDxk0vcSJwHN2oqKgn46bCQ3DhC/LRPwrJA==
-  dependencies:
-    axios "^0.25.0"
-    bn.js "5.2.0"
-    dataloader "^2.0.0"
-    ethjs-unit "0.1.6"
-    fp-ts "^2.11.1"
-    io-ts "^2.2.16"
-    io-ts-reporters "^2.0.0"
-    symbol.inspect "1.0.1"
-    teslabot "^1.3.0"
-    ton-crypto "2.1.0"
-    tweetnacl "1.0.3"
-
-ton@^9.3.1:
-  version "9.9.0"
-  resolved "https://registry.yarnpkg.com/ton/-/ton-9.9.0.tgz#f966c8769fda7b58b24d6fe4aa7c9e79fe635b14"
-  integrity sha512-6t+/5b/6DbQH58ywJoc96CN1txcxXjZfYXk/vDeJClqfFR5Z9QikfoPGjLPHTkpLo8jALGPrcKnZDYIwU6biew==
+ton@12.2.8, ton@^12.2.8, ton@^9.3.1:
+  version "12.2.8"
+  resolved "https://registry.yarnpkg.com/ton/-/ton-12.2.8.tgz#2ddacf075abad0fbe947b62f5f368949df03b891"
+  integrity sha512-fCuKkNYjjIpW6+oZ40a6+HZYCoXr6pYgWgxKW0VgYwqJA62ydHy2Kjful4NFOPwyDA1zLfQWxhhad2eJ3U+MnA==
   dependencies:
     axios "^0.25.0"
     bn.js "5.2.0"

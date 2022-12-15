@@ -17,10 +17,10 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-(slice, ((int))) __gen_read_Add(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 3310826759);
-    var v'amount = sc~load_uint(32);
-    return (sc, (v'amount));
+(slice, ((int))) __gen_read_Add(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3310826759);
+    var v'amount = sc_0~load_uint(32);
+    return (sc_0, (v'amount));
 }
 
 builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
@@ -30,10 +30,10 @@ builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
     return build_0;
 }
 
-(slice, ((slice, int))) __gen_read_SampleTactContract(slice sc) inline {
-    var v'owner = sc~__tact_load_address();
-    var v'counter = sc~load_uint(32);
-    return (sc, (v'owner, v'counter));
+(slice, ((slice, int))) __gen_read_SampleTactContract(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'counter = sc_0~load_uint(32);
+    return (sc_0, (v'owner, v'counter));
 }
 
 (slice, int) __gen_load_SampleTactContract() inline {
@@ -49,6 +49,10 @@ builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
     set_data(b.end_cell());
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 cell __gen_SampleTactContract_init(cell sys', slice owner) {
     var ((self'owner, self'counter)) = (null(), null());
     self'owner = owner;
@@ -62,7 +66,7 @@ cell __gen_SampleTactContract_init(cell sys', slice owner) {
 ((slice, int), ()) __gen_SampleTactContract_add((slice, int) self, int v) impure {
     var ((self'owner, self'counter)) = self;
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
-    throw_unless(100, __tact_address_eq(ctx'sender, self'owner));
+    require(__tact_address_eq(ctx'sender, self'owner));
     self'counter = (self'counter + v);
     return ((self'owner, self'counter), ());
 }
@@ -132,7 +136,7 @@ _ __gen_get_counter() method_id(104984) {
         }
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_SampleTactContract(cell sys', slice owner) method_id {

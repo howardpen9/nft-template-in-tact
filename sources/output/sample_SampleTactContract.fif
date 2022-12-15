@@ -8,6 +8,7 @@ PROGRAM{
   DECLPROC __gen_read_SampleTactContract
   DECLPROC __gen_load_SampleTactContract
   DECLPROC __gen_store_SampleTactContract
+  DECLPROC require
   DECLPROC __gen_SampleTactContract_init
   DECLPROC __gen_SampleTactContract_add
   DECLPROC __gen_SampleTactContract_counter
@@ -37,7 +38,7 @@ PROGRAM{
     SWAP
     3310826759 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     32 LDU
     SWAP
   }>
@@ -71,6 +72,9 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  require PROC:<{
+    131 THROWIFNOT
+  }>
   __gen_SampleTactContract_init PROC:<{
     0 PUSHINT
     s0 s2 XCHG
@@ -86,7 +90,7 @@ PROGRAM{
     NIP
     s3 PUSH
     __tact_address_eq INLINECALLDICT
-    100 THROWIFNOT
+    require CALLDICT
     ADD
   }>
   __gen_SampleTactContract_counter PROC:<{
@@ -163,7 +167,7 @@ PROGRAM{
     }>ELSE<{
       DROP
     }>
-    100 THROW
+    130 THROW
   }>
   init_SampleTactContract PROC:<{
     __gen_SampleTactContract_init CALLDICT

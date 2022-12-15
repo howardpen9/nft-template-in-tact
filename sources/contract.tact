@@ -16,7 +16,7 @@ contract SampleTactContract {
         
         // Check sender
         let ctx: Context = context();
-        require(100, ctx.sender == self.owner);
+        require(ctx.sender == self.owner);
         
         // Update counter
         self.counter = (self.counter + v);
