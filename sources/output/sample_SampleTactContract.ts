@@ -213,7 +213,7 @@ export function unpackTupleAdd(slice: TupleSlice4): Add {
     return { $$type: 'Add', amount: amount };
 }
 export async function SampleTactContract_init(owner: Address) {
-    const __code = 'te6ccgECEwEAAUkAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAREgHp32/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBBCGKrmoPdRxoYdqJoagD8MX0gAIDpj6y2CQFpj4DBCGKrmoPdeXBA6Y+AmIl4B2R8IQDmLKzni2WP5PaqcGAASJhxhvlgQUBgIBIAcIAJT5AYLwxPjXIxLt/e9be+x4M727Fi0VEb14qRKu0PJjevZVcq66jiLtRNDUAfhi+kABAdMfWWwS8A/I+EIBzFlZzxbLH8ntVNsx4AIBWAkKAgEgCwwABzy4IOAAFxwAsjMAlnPFssfyYAIBIA0OAgEgDxAAGT4QW8jMDEjxwXwCqCAAAwxgAAU8AyAABxx8AyAACb2ez4BcACm80MdqJoagD8MX0gAIDpj6y2CXgGw=';
+    const __code = 'te6ccgECFQEAAXcAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAREgHp32/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBBCGKrmoPdRxoYdqJoagD8MX0gAIDpj6y2CQFpj4DBCGKrmoPdeXBA6Y+AmIl4B2R8IQDmLKzni2WP5PaqcGAASJhxhvlgQUBgIBIAcIAJT5AYLwxPjXIxLt/e9be+x4M727Fi0VEb14qRKu0PJjevZVcq66jiLtRNDUAfhi+kABAdMfWWwS8A/I+EIBzFlZzxbLH8ntVNsx4AIBWAkKAgEgCwwABzy4IOAAFxwAsjMAlnPFssfyYAIBIA0OAgEgDxAAGT4QW8jMDEjxwXwCqCAAAwxgAAU8AyAABxx8AyAACb2ez4BcAgFIExQAKbdDHaiaGoA/DF9IACA6Y+stgl4BsABNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcw';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

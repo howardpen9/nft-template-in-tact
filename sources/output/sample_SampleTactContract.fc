@@ -142,3 +142,14 @@ _ __gen_get_counter() method_id(104984) {
 cell init_SampleTactContract(cell sys', slice owner) method_id {
     return __gen_SampleTactContract_init(sys', owner);
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmepZMpGsE7etKMzjtpJpbkUD1n1guBzFBCp1uZVAxjvTW";
+}
