@@ -49,31 +49,31 @@ builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
     set_data(b.end_cell());
 }
 
-() require(int condition) impure {
-    throw_unless(131, condition);
+() require(int $condition) impure {
+    throw_unless(131, $condition);
 }
 
-cell __gen_SampleTactContract_init(cell sys', slice owner) {
-    var ((self'owner, self'counter)) = (null(), null());
-    self'owner = owner;
-    self'counter = 0;
+cell __gen_SampleTactContract_init(cell sys', slice $owner) {
+    var (($self'owner, $self'counter)) = (null(), null());
+    $self'owner = $owner;
+    $self'counter = 0;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_SampleTactContract(b', (self'owner, self'counter));
+    b' = __gen_write_SampleTactContract(b', ($self'owner, $self'counter));
     return b'.end_cell();
 }
 
-((slice, int), ()) __gen_SampleTactContract_add((slice, int) self, int v) impure {
-    var ((self'owner, self'counter)) = self;
-    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
-    require(__tact_address_eq(ctx'sender, self'owner));
-    self'counter = (self'counter + v);
-    return ((self'owner, self'counter), ());
+((slice, int), ()) __gen_SampleTactContract_add((slice, int) $self, int $v) impure {
+    var (($self'owner, $self'counter)) = $self;
+    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    require(__tact_address_eq($ctx'sender, $self'owner));
+    $self'counter = ($self'counter + $v);
+    return (($self'owner, $self'counter), ());
 }
 
-int __gen_SampleTactContract_counter((slice, int) self) impure {
-    var ((self'owner, self'counter)) = self;
-    return self'counter;
+int __gen_SampleTactContract_counter((slice, int) $self) impure {
+    var (($self'owner, $self'counter)) = $self;
+    return $self'counter;
 }
 
 _ __gen_get_counter() method_id(104984) {
@@ -82,17 +82,17 @@ _ __gen_get_counter() method_id(104984) {
     return res;
 }
 
-(((slice, int)), ()) __gen_SampleTactContract_receive_Add((slice, int) self, (int) msg) impure {
-    var (self'owner, self'counter) = self;
-    var (msg'amount) = msg;
-    (self'owner, self'counter)~__gen_SampleTactContract_add(msg'amount);
-    return ((self'owner, self'counter), ());
+(((slice, int)), ()) __gen_SampleTactContract_receive_Add((slice, int) $self, (int) $msg) impure {
+    var ($self'owner, $self'counter) = $self;
+    var ($msg'amount) = $msg;
+    ($self'owner, $self'counter)~__gen_SampleTactContract_add($msg'amount);
+    return (($self'owner, $self'counter), ());
 }
 
-((slice, int), ()) __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae((slice, int) self) impure {
-    var (self'owner, self'counter) = self;
-    (self'owner, self'counter)~__gen_SampleTactContract_add(1);
-    return ((self'owner, self'counter), ());
+((slice, int), ()) __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae((slice, int) $self) impure {
+    var ($self'owner, $self'counter) = $self;
+    ($self'owner, $self'counter)~__gen_SampleTactContract_add(1);
+    return (($self'owner, $self'counter), ());
 }
 
 
@@ -151,5 +151,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmepZMpGsE7etKMzjtpJpbkUD1n1guBzFBCp1uZVAxjvTW";
+    return "ipfs://QmRuqkbUF7jphC84xbWLkde8wWFF8wx8ieLFHZNMP1BRGv";
 }

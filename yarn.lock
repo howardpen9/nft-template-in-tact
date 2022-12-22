@@ -2843,10 +2843,10 @@ ton-nodejs@^1.4.3:
   resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.3.tgz#10c4f993fbd717a925007f63e744f6a9e3868555"
   integrity sha512-Thwl2lmYuaaciFs0CTybb0ZPwscl0ANUriv3QUP494ttRWKT2rxoyydnepVw1hWDzXeDh3Rxn0XA7vN1hySVyg==
 
-ton-tact@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.2.0.tgz#1ccffc66fd91a2efbebf4ae58cf9b8642a5564a7"
-  integrity sha512-GwU0t25HmnGoc+Y6b1RDq0zpkXhp4MqhnXa+lZ+Ee67ow+zs9buNo7myjQYF84Tp220Zyw/VVXMDCdMg0rwXvQ==
+ton-tact@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.3.0.tgz#3f71b541d0247fbc4771393d40f859dd809f7b58"
+  integrity sha512-jJJMykRpVZwZ5EJIG8yJoMQvNm6gSiAvy0M4KMjDGlMXaVcyViyKoZyr/RS5gQPCDm1RL+20sdwQcD6l3U1xZg==
   dependencies:
     "@ipld/dag-pb" "2.1.18"
     "@types/bn.js" "^5.1.1"
@@ -2859,7 +2859,7 @@ ton-tact@^0.2.0:
     ohm-js "^16.4.0"
     ora "^6.1.2"
     prando "^6.0.1"
-    ton "12.2.8"
+    ton "12.3.2"
     ton-compiler "^2.0.0"
     ton-contract-executor "^0.6.0"
     ton-crypto "^3.2.0"
@@ -2867,10 +2867,10 @@ ton-tact@^0.2.0:
     tvm-disassembler "^1.2.1"
     zod "^3.20.2"
 
-ton@12.2.8, ton@^12.2.8, ton@^9.3.1:
-  version "12.2.8"
-  resolved "https://registry.yarnpkg.com/ton/-/ton-12.2.8.tgz#2ddacf075abad0fbe947b62f5f368949df03b891"
-  integrity sha512-fCuKkNYjjIpW6+oZ40a6+HZYCoXr6pYgWgxKW0VgYwqJA62ydHy2Kjful4NFOPwyDA1zLfQWxhhad2eJ3U+MnA==
+ton@12.3.2, ton@^12.3.2, ton@^9.3.1:
+  version "12.3.2"
+  resolved "https://registry.yarnpkg.com/ton/-/ton-12.3.2.tgz#f7e64fae287d7a43a9d8140a85cb5fd9d5b414b9"
+  integrity sha512-F8e2ocX29uY+EiH+ORjZfIbcWu6KtUDGtaX4PX9ETVXVz8P+3KFtyvlsNHOMAlvfb4woaHSO6NElpyLcotniQg==
   dependencies:
     axios "^0.25.0"
     bn.js "5.2.0"
