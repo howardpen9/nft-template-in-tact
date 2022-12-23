@@ -2843,10 +2843,10 @@ ton-nodejs@^1.4.3:
   resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.3.tgz#10c4f993fbd717a925007f63e744f6a9e3868555"
   integrity sha512-Thwl2lmYuaaciFs0CTybb0ZPwscl0ANUriv3QUP494ttRWKT2rxoyydnepVw1hWDzXeDh3Rxn0XA7vN1hySVyg==
 
-ton-tact@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.4.0.tgz#d8ddcb5673e5806dd4efb4e2141db56b6d434c69"
-  integrity sha512-oJnuIdu9B3AI3BjBaTT7ewR26d+2Os+ALrnWEpmyrUp8sWuohyWu7kzalgA/4b5sjULb7vzclu2JINEaZ1Ihvg==
+ton-tact@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/ton-tact/-/ton-tact-0.5.0.tgz#c31dc4403df8d823f4cc52ccfe64bff276af799a"
+  integrity sha512-J9Q98MbcTudw5YVrXGsJk165lfR1fpoN/2/z9XBA01cZ+K25MgsAVECEDbyMwXdkBz37CeeZKku6JCHnN1ry0g==
   dependencies:
     "@ipld/dag-pb" "2.1.18"
     "@types/bn.js" "^5.1.1"
@@ -2859,6 +2859,7 @@ ton-tact@^0.4.0:
     ohm-js "^16.4.0"
     ora "^6.1.2"
     prando "^6.0.1"
+    qs "^6.11.0"
     ton "12.3.2"
     ton-compiler "^2.0.0"
     ton-contract-executor "^0.6.0"

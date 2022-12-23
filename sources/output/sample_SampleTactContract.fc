@@ -1,14 +1,20 @@
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
     return (cs, raw);
 }
 
 builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
 }
@@ -49,10 +55,6 @@ builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
     set_data(b.end_cell());
 }
 
-() require(int $condition) impure {
-    throw_unless(131, $condition);
-}
-
 cell __gen_SampleTactContract_init(cell sys', slice $owner) {
     var (($self'owner, $self'counter)) = (null(), null());
     $self'owner = $owner;
@@ -65,8 +67,8 @@ cell __gen_SampleTactContract_init(cell sys', slice $owner) {
 
 ((slice, int), ()) __gen_SampleTactContract_add((slice, int) $self, int $v) impure {
     var (($self'owner, $self'counter)) = $self;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
-    require(__tact_address_eq($ctx'sender, $self'owner));
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    throw_unless(4429, __tact_address_eq($ctx'sender, $self'owner));
     $self'counter = ($self'counter + $v);
     return (($self'owner, $self'counter), ());
 }
@@ -107,7 +109,7 @@ _ __gen_get_counter() method_id(104984) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -151,5 +153,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRuqkbUF7jphC84xbWLkde8wWFF8wx8ieLFHZNMP1BRGv";
+    return "ipfs://QmaLqEgpvfzYJeepPWLU3t8PrPeyibpTeSriCtKofQEt4H";
 }

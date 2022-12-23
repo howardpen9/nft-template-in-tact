@@ -42,6 +42,7 @@ export type Context = {
     bounced: boolean;
     sender: Address;
     value: BN;
+    raw: Cell;
 }
 
 export function packContext(src: Context): Cell {
@@ -49,6 +50,7 @@ export function packContext(src: Context): Cell {
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
     b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeRef(src.raw);
     return b_0.endCell();
 }
 
@@ -56,6 +58,7 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
 }
 
 export function packTupleContext(src: Context): StackItem[] {
@@ -63,6 +66,7 @@ export function packTupleContext(src: Context): StackItem[] {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
@@ -70,13 +74,15 @@ export function unpackStackContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -213,7 +219,7 @@ export function unpackTupleAdd(slice: TupleSlice4): Add {
     return { $$type: 'Add', amount: amount };
 }
 export async function SampleTactContract_init(owner: Address) {
-    const __code = 'te6ccgECFQEAAXcAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAREgHp32/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBBCGKrmoPdRxoYdqJoagD8MX0gAIDpj6y2CQFpj4DBCGKrmoPdeXBA6Y+AmIl4B2R8IQDmLKzni2WP5PaqcGAASJhxhvlgQUBgIBIAcIAJT5AYLwxPjXIxLt/e9be+x4M727Fi0VEb14qRKu0PJjevZVcq66jiLtRNDUAfhi+kABAdMfWWwS8A/I+EIBzFlZzxbLH8ntVNsx4AIBWAkKAgEgCwwABzy4IOAAFxwAsjMAlnPFssfyYAIBIA0OAgEgDxAAGT4QW8jMDEjxwXwCqCAAAwxgAAU8AyAABxx8AyAACb2ez4BcAgFIExQAKbdDHaiaGoA/DF9IACA6Y+stgl4BsABNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcw';
+    const __code = 'te6ccgECEwEAAW4AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAPEAHn32/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBEoMzeCfDCBSK3wEEEIYquag91HGhh2omhqAPwxfSAAgOmPrLYJAWmPgMEIYquag915cEDpj4CYiXgHZHwhAOYsrOeLZY/k9qpwYABImHGG+WBBQGAgEgBwgAlPkBgvDE+NcjEu3971t77HgzvbsWLRURvXipEq7Q8mN69lVyrrqOIu1E0NQB+GL6QAEB0x9ZbBLwD8j4QgHMWVnPFssfye1U2zHgABfzgBZGYBLOeLZY/kwCASAJCgIBIAsMAgEgDQ4AHz4QW8kW4ERTTIkxwXy9KCAAAwxgAAU8AyAABxx8AyAACb2ez4BcAgFIERIAKbdDHaiaGoA/DF9IACA6Y+stgl4BsABNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcw';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -249,6 +255,7 @@ export const SampleTactContract_errors: { [key: string]: string } = {
     '132': `Access denied`,
     '133': `Contract stopped`,
     '134': `Invalid argument`,
+    '4429': `Invalid sender`,
 }
 
 export class SampleTactContract {
