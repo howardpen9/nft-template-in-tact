@@ -1,8 +1,10 @@
+import "@stdlib/deploy";
+
 message Add {
     amount: Int as uint32;
 }
 
-contract SampleTactContract {
+contract SampleTactContract with Deployable {
 
     owner: Address;
     counter: Int as uint32;
