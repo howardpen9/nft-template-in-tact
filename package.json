@@ -19,7 +19,7 @@
     "prettier": "^2.5.1",
     "qs": "^6.11.0",
     "ton": "^13.1.0",
-    "ton-core": "^0.36.1",
+    "ton-core": "^0.37.0",
     "ton-crypto": "^3.2.0",
     "ton-emulator": "^1.3.0",
     "ton-tact": "^0.7.0",
