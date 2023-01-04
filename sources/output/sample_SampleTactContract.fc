@@ -74,7 +74,7 @@ builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -82,55 +82,55 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-() reply(cell $body) impure {
+() $reply(cell $body) impure {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell __gen_SampleTactContract_init(cell sys', slice $owner) {
+cell $__gen_SampleTactContract_init(cell sys', slice $owner) {
     var (($self'owner, $self'counter)) = (null(), null());
     $self'owner = $owner;
     $self'counter = 0;
@@ -140,7 +140,7 @@ cell __gen_SampleTactContract_init(cell sys', slice $owner) {
     return b'.end_cell();
 }
 
-((slice, int), ()) __gen_SampleTactContract_add((slice, int) $self, int $v) impure {
+((slice, int), ()) $__gen_SampleTactContract_add((slice, int) $self, int $v) impure {
     var (($self'owner, $self'counter)) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(4429, __tact_address_eq($ctx'sender, $self'owner));
@@ -148,34 +148,34 @@ cell __gen_SampleTactContract_init(cell sys', slice $owner) {
     return (($self'owner, $self'counter), ());
 }
 
-int __gen_SampleTactContract_counter((slice, int) $self) impure {
+int $__gen_SampleTactContract_counter((slice, int) $self) impure {
     var (($self'owner, $self'counter)) = $self;
     return $self'counter;
 }
 
-_ __gen_get_counter() method_id(104984) {
+_ $__gen_get_counter() method_id(104984) {
     var self = __gen_load_SampleTactContract();
-    var res = __gen_SampleTactContract_counter(self);
+    var res = $__gen_SampleTactContract_counter(self);
     return res;
 }
 
-(((slice, int)), ()) __gen_SampleTactContract_receive_Add((slice, int) $self, (int) $msg) impure {
+(((slice, int)), ()) $__gen_SampleTactContract_receive_Add((slice, int) $self, (int) $msg) impure {
     var ($self'owner, $self'counter) = $self;
     var ($msg'amount) = $msg;
-    ($self'owner, $self'counter)~__gen_SampleTactContract_add($msg'amount);
+    ($self'owner, $self'counter)~$__gen_SampleTactContract_add($msg'amount);
     return (($self'owner, $self'counter), ());
 }
 
-((slice, int), ()) __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae((slice, int) $self) impure {
+((slice, int), ()) $__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae((slice, int) $self) impure {
     var ($self'owner, $self'counter) = $self;
-    ($self'owner, $self'counter)~__gen_SampleTactContract_add(1);
+    ($self'owner, $self'counter)~$__gen_SampleTactContract_add(1);
     return (($self'owner, $self'counter), ());
 }
 
-(((slice, int)), ()) __gen_SampleTactContract_receive_Deploy((slice, int) $self, (int) $deploy) impure {
+(((slice, int)), ()) $__gen_SampleTactContract_receive_Deploy((slice, int) $self, (int) $deploy) impure {
     var ($self'owner, $self'counter) = $self;
     var ($deploy'queryId) = $deploy;
-    reply(__gen_writecell_DeployOk(($deploy'queryId)));
+    $reply(__gen_writecell_DeployOk(($deploy'queryId)));
     return (($self'owner, $self'counter), ());
 }
 
@@ -202,7 +202,7 @@ _ __gen_get_counter() method_id(104984) {
     if (op == 3310826759) {
         var self = __gen_load_SampleTactContract();
         var msg = in_msg~__gen_read_Add();
-        self~__gen_SampleTactContract_receive_Add(msg);
+        self~$__gen_SampleTactContract_receive_Add(msg);
         __gen_store_SampleTactContract(self);
         return ();
     }
@@ -211,7 +211,7 @@ _ __gen_get_counter() method_id(104984) {
     if (op == 2509716940) {
         var self = __gen_load_SampleTactContract();
         var msg = in_msg~__gen_read_Deploy();
-        self~__gen_SampleTactContract_receive_Deploy(msg);
+        self~$__gen_SampleTactContract_receive_Deploy(msg);
         __gen_store_SampleTactContract(self);
         return ();
     }
@@ -223,7 +223,7 @@ _ __gen_get_counter() method_id(104984) {
         ;; Receive "increment" message
         if (text_op == 0xc4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae) {
             var self = __gen_load_SampleTactContract();
-            self~__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae();
+            self~$__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae();
             __gen_store_SampleTactContract(self);
             return ();
         }
@@ -232,8 +232,9 @@ _ __gen_get_counter() method_id(104984) {
     throw(130);
 }
 
-cell init_SampleTactContract(cell sys', slice owner) method_id {
-    return __gen_SampleTactContract_init(sys', owner);
+cell init_SampleTactContract(cell sys', slice $$owner) method_id {
+    slice $owner = $$owner;
+    return $__gen_SampleTactContract_init(sys', $owner);
 }
 
 _ supported_interfaces() method_id {

@@ -13,16 +13,16 @@ PROGRAM{
   DECLPROC __gen_read_SampleTactContract
   DECLPROC __gen_load_SampleTactContract
   DECLPROC __gen_store_SampleTactContract
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC reply
-  DECLPROC __gen_SampleTactContract_init
-  DECLPROC __gen_SampleTactContract_add
-  DECLPROC __gen_SampleTactContract_counter
-  104984 DECLMETHOD __gen_get_counter
-  DECLPROC __gen_SampleTactContract_receive_Add
-  DECLPROC __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae
-  DECLPROC __gen_SampleTactContract_receive_Deploy
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $reply
+  DECLPROC $__gen_SampleTactContract_init
+  DECLPROC $__gen_SampleTactContract_add
+  DECLPROC $__gen_SampleTactContract_counter
+  104984 DECLMETHOD $__gen_get_counter
+  DECLPROC $__gen_SampleTactContract_receive_Add
+  DECLPROC $__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae
+  DECLPROC $__gen_SampleTactContract_receive_Deploy
   DECLPROC recv_internal
   78809 DECLMETHOD init_SampleTactContract
   113617 DECLMETHOD supported_interfaces
@@ -114,7 +114,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -124,13 +124,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -150,18 +150,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -170,14 +170,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -186,13 +186,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -202,14 +202,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -217,13 +217,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  reply PROC:<{
+  $reply PROC:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -234,9 +234,9 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_SampleTactContract_init PROC:<{
+  $__gen_SampleTactContract_init PROC:<{
     0 PUSHINT
     s0 s2 XCHG
     NEWC
@@ -245,7 +245,7 @@ PROGRAM{
     __gen_write_SampleTactContract INLINECALLDICT
     ENDC
   }>
-  __gen_SampleTactContract_add PROC:<{
+  $__gen_SampleTactContract_add PROC:<{
     __tact_context_get INLINECALLDICT
     2DROP
     4429 PUSHINT
@@ -255,23 +255,23 @@ PROGRAM{
     THROWANYIFNOT
     ADD
   }>
-  __gen_SampleTactContract_counter PROC:<{
+  $__gen_SampleTactContract_counter PROC:<{
     NIP
   }>
-  __gen_get_counter PROC:<{
+  $__gen_get_counter PROC:<{
     __gen_load_SampleTactContract INLINECALLDICT
-    __gen_SampleTactContract_counter CALLDICT
+    $__gen_SampleTactContract_counter CALLDICT
   }>
-  __gen_SampleTactContract_receive_Add PROC:<{
-    __gen_SampleTactContract_add CALLDICT
+  $__gen_SampleTactContract_receive_Add PROC:<{
+    $__gen_SampleTactContract_add CALLDICT
   }>
-  __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae PROC:<{
+  $__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae PROC:<{
     1 PUSHINT
-    __gen_SampleTactContract_add CALLDICT
+    $__gen_SampleTactContract_add CALLDICT
   }>
-  __gen_SampleTactContract_receive_Deploy PROC:<{
+  $__gen_SampleTactContract_receive_Deploy PROC:<{
     __gen_writecell_DeployOk INLINECALLDICT
-    reply CALLDICT
+    $reply CALLDICT
   }>
   recv_internal PROC:<{
     SAMEALTSAVE
@@ -316,7 +316,7 @@ PROGRAM{
       __gen_read_Add INLINECALLDICT
       NIP
       s1 s2 XCHG
-      __gen_SampleTactContract_receive_Add CALLDICT
+      $__gen_SampleTactContract_receive_Add CALLDICT
       __gen_store_SampleTactContract INLINECALLDICT
     }>
     DUP
@@ -329,7 +329,7 @@ PROGRAM{
       __gen_read_Deploy INLINECALLDICT
       NIP
       s1 s2 XCHG
-      __gen_SampleTactContract_receive_Deploy CALLDICT
+      $__gen_SampleTactContract_receive_Deploy CALLDICT
       __gen_store_SampleTactContract INLINECALLDICT
     }>
     0 EQINT
@@ -339,7 +339,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_SampleTactContract INLINECALLDICT
-        __gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae CALLDICT
+        $__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae CALLDICT
         __gen_store_SampleTactContract INLINECALLDICT
         RETALT
       }>
@@ -349,7 +349,7 @@ PROGRAM{
     130 THROW
   }>
   init_SampleTactContract PROC:<{
-    __gen_SampleTactContract_init CALLDICT
+    $__gen_SampleTactContract_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
