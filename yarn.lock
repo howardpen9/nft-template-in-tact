@@ -2800,10 +2800,10 @@
     "teslabot" "^1.5.0"
     "zod" "^3.20.2"
 
-"ton-tact@^0.7.0":
-  "integrity" "sha512-AIafFIFr+9LzEWP6XclKBIJ2vjK8iPCyif5wGh3I0xqwE3sgp9vaAM1fEko2soW9e4EPwSOEN+R3YP25QvCuBA=="
-  "resolved" "https://registry.npmjs.org/ton-tact/-/ton-tact-0.7.0.tgz"
-  "version" "0.7.0"
+"ton-tact@^0.7.1":
+  "integrity" "sha512-oKXZLyUf2YKZ16mLlyFPJs3X/E+bfAZIg0TOpyXfLfsBDc917dMilfUViDpgsH13Ss4T+sZpWMpn2bmPKEfIww=="
+  "resolved" "https://registry.npmjs.org/ton-tact/-/ton-tact-0.7.1.tgz"
+  "version" "0.7.1"
   dependencies:
     "@ipld/dag-pb" "2.1.18"
     "arg" "^5.0.2"
