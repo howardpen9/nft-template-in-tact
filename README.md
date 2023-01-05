@@ -27,8 +27,8 @@ To launch your own contract you should:
 }
 ```
 Where:  
-`path` - is path to *.tact contract file it will be used when yarn build run. 
-`output` - is path to building files when yarn build run. yarn test & yarn deploy use these output files. 
+* `path` - is path to *.tact contract file it will be used when `yarn build` run. 
+* `output` - is path to building files when yarn build run. `yarn test` & `yarn deploy` use these output files. 
 
 In this way you can use template project to play with Tact smart contract examples from [examples](https://github.com/ton-community/tact/tree/main/examples). Good luck!🍀🚀
 
