@@ -1,0 +1,34 @@
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline_ref {
+    var (v'owner, v'counter) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = build_0.store_uint(v'counter, 32);
+    return build_0;
+}
+
+cell $__gen_SampleTactContract_init(cell sys', slice $owner) {
+    var (($self'owner, $self'counter)) = (null(), null());
+    $self'owner = $owner;
+    $self'counter = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SampleTactContract(b', ($self'owner, $self'counter));
+    return b'.end_cell();
+}
+
+cell init(cell sys', slice $$owner) method_id {
+    slice $owner = $$owner;
+    return $__gen_SampleTactContract_init(sys', $owner);
+}
+
+() main() {
+}

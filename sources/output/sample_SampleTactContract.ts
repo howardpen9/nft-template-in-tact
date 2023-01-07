@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -23,18 +23,28 @@ export function loadStateInit(slice: Slice) {
 }
 
 function loadTupleStateInit(source: TupleReader) {
-    const _code = source.readCell();
-    const _data = source.readCell();
+    let _code = source.readCell();
+    let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 function storeTupleStateInit(source: StateInit) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: source.code });
-    __tuple.push({ type: 'cell', cell: source.data });
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -63,22 +73,32 @@ export function loadContext(slice: Slice) {
 }
 
 function loadTupleContext(source: TupleReader) {
-    const _bounced = source.readBoolean();
-    const _sender = source.readAddress();
-    const _value = source.readBigNumber();
-    const _raw = source.readCell();
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 function storeTupleContext(source: Context) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'int', value: source.bounced ? -1n : 0n });
-    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.sender).endCell() });
-    __tuple.push({ type: 'int', value: source.value });
-    __tuple.push({ type: 'slice', cell: source.raw });
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -97,24 +117,9 @@ export function storeSendParameters(src: SendParameters) {
         b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
-        if (src.body !== null) {
-            b_0.storeBit(true);
-            b_0.storeRef(src.body);
-        } else {
-            b_0.storeBit(false);
-        }
-        if (src.code !== null) {
-            b_0.storeBit(true);
-            b_0.storeRef(src.code);
-        } else {
-            b_0.storeBit(false);
-        }
-        if (src.data !== null) {
-            b_0.storeBit(true);
-            b_0.storeRef(src.data);
-        } else {
-            b_0.storeBit(false);
-        }
+        if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
+        if (src.code !== null && src.code !== undefined) { b_0.storeBit(true).storeRef(src.code); } else { b_0.storeBit(false); }
+        if (src.data !== null && src.data !== undefined) { b_0.storeBit(true).storeRef(src.data); } else { b_0.storeBit(false); }
     };
 }
 
@@ -124,56 +129,45 @@ export function loadSendParameters(slice: Slice) {
     let _to = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _mode = sc_0.loadIntBig(257);
-    let _body: Cell | null = null;
-    if (sc_0.loadBit()) {
-        _body = sc_0.loadRef();
-    }
-    let _code: Cell | null = null;
-    if (sc_0.loadBit()) {
-        _code = sc_0.loadRef();
-    }
-    let _data: Cell | null = null;
-    if (sc_0.loadBit()) {
-        _data = sc_0.loadRef();
-    }
+    let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
+    let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
+    let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 function loadTupleSendParameters(source: TupleReader) {
-    const _bounce = source.readBoolean();
-    const _to = source.readAddress();
-    const _value = source.readBigNumber();
-    const _mode = source.readBigNumber();
-    const _body = source.readCellOpt();
-    const _code = source.readCellOpt();
-    const _data = source.readCellOpt();
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 function storeTupleSendParameters(source: SendParameters) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'int', value: source.bounce ? -1n : 0n });
-    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.to).endCell() });
-    __tuple.push({ type: 'int', value: source.value });
-    __tuple.push({ type: 'int', value: source.mode });
-    if (source.body !== null) {
-        __tuple.push({ type: 'cell', cell: source.body });
-    } else {
-        __tuple.push({ type: 'null' });
-    }
-    if (source.code !== null) {
-        __tuple.push({ type: 'cell', cell: source.code });
-    } else {
-        __tuple.push({ type: 'null' });
-    }
-    if (source.data !== null) {
-        __tuple.push({ type: 'cell', cell: source.data });
-    } else {
-        __tuple.push({ type: 'null' });
-    }
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type Deploy = {
     $$type: 'Deploy';
     queryId: bigint;
@@ -182,29 +176,39 @@ export type Deploy = {
 export function storeDeploy(src: Deploy) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2509716940, 32);
+        b_0.storeUint(2490013878, 32);
         b_0.storeUint(src.queryId, 64);
     };
 }
 
 export function loadDeploy(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2509716940) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2490013878) { throw Error('Invalid prefix'); }
     let _queryId = sc_0.loadUintBig(64);
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
 
 function loadTupleDeploy(source: TupleReader) {
-    const _queryId = source.readBigNumber();
+    let _queryId = source.readBigNumber();
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
 
 function storeTupleDeploy(source: Deploy) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'int', value: source.queryId });
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
 }
 
+function dictValueParserDeploy(): DictionaryValue<Deploy> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeDeploy(src)).endCell());
+        },
+        parse: (src) => {
+            return loadDeploy(src.loadRef().beginParse());
+        }
+    }
+}
 export type DeployOk = {
     $$type: 'DeployOk';
     queryId: bigint;
@@ -213,29 +217,39 @@ export type DeployOk = {
 export function storeDeployOk(src: DeployOk) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3548362785, 32);
+        b_0.storeUint(2952335191, 32);
         b_0.storeUint(src.queryId, 64);
     };
 }
 
 export function loadDeployOk(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3548362785) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2952335191) { throw Error('Invalid prefix'); }
     let _queryId = sc_0.loadUintBig(64);
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
 
 function loadTupleDeployOk(source: TupleReader) {
-    const _queryId = source.readBigNumber();
+    let _queryId = source.readBigNumber();
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
 
 function storeTupleDeployOk(source: DeployOk) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'int', value: source.queryId });
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
 }
 
+function dictValueParserDeployOk(): DictionaryValue<DeployOk> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeDeployOk(src)).endCell());
+        },
+        parse: (src) => {
+            return loadDeployOk(src.loadRef().beginParse());
+        }
+    }
+}
 export type Add = {
     $$type: 'Add';
     amount: bigint;
@@ -244,40 +258,53 @@ export type Add = {
 export function storeAdd(src: Add) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3310826759, 32);
+        b_0.storeUint(2278832834, 32);
         b_0.storeUint(src.amount, 32);
     };
 }
 
 export function loadAdd(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3310826759) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2278832834) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadUintBig(32);
     return { $$type: 'Add' as const, amount: _amount };
 }
 
 function loadTupleAdd(source: TupleReader) {
-    const _amount = source.readBigNumber();
+    let _amount = source.readBigNumber();
     return { $$type: 'Add' as const, amount: _amount };
 }
 
 function storeTupleAdd(source: Add) {
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'int', value: source.amount });
-    return __tuple;
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    return builder.build();
 }
 
+function dictValueParserAdd(): DictionaryValue<Add> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeAdd(src)).endCell());
+        },
+        parse: (src) => {
+            return loadAdd(src.loadRef().beginParse());
+        }
+    }
+}
 async function SampleTactContract_init(owner: Address) {
-    const __code = 'te6ccgECIAEAAosAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAcHQIBIAYHAgFIDQ4CAdQICQAV/KP4DlAHA4AOUAQD9Tt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQxVc1B7qONDDtRNDUAfhi+kABAdMfWWwSAtMfAYIQxVc1B7ry4IHTHwExEvAVyPhCAcxZWc8Wyx/J7VTgIIIQlZc9zLrjAsAAkTDjDYAoLDAALCBu8tCAgAGgw7UTQ1AH4YvpAAQHTH1lsEgLTHwGCEJWXPcy68uCB0z8BMRLwF8j4QgHMWVnPFssfye1UAJT5AYLwxPjXIxLt/e9be+x4M727Fi0VEb14qRKu0PJjevZVcq66jiLtRNDUAfhi+kABAdMfWWwS8BbI+EIBzFlZzxbLH8ntVNsx4AAG8sCCAgEgDxACASAWFwIBIBESAgEgFBUB9zIcQHKAVAH8A9wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/APyHDwD3DwDyRus5l/8A8E8AFQBMyVNANw8A/iJG6zmX/wDwTwAVAEzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmH/wDwHwAQHMlDFw8A/iyQGATACU+EFvJBAjXwN/AnCAQlhtbfAQgAAT7AAAXHACyMwCWc8Wyx/JgAB8+EFvJFuBEU0yJMcF8vSggAgEgGBkCASAaGwADDGAABTwE4AAHHHwE4AAhMgBghDTf7ghWMsfyz/J8BGAACb2ez4CUAgFIHh8AKbdDHaiaGoA/DF9IACA6Y+stgl4CkABNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcw';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
-    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    const __init = 'te6ccgEBBwEANAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBEdOAFkZgFtnmTAYAClnPFssf';
+    const __code = 'te6ccgECIwEAAlYAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAWofIAIBIAYHAgFIEBECAdQICQAV/KP4DlAHA4AOUAQElTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQh9Q6wrqPjDDbPALbPDES8BTbPOAgghCUapi2uoCEKDgsACwgbvLQgIAAg0x8BghCH1DrCuvLggdMfAQQij4ww2zwC2zwxEvAW2zzgwAAhDA4NACDTHwGCEJRqmLa68uCB0z8BAnCPMPkBgvDE+NcjEu3971t77HgzvbsWLRURvXipEq7Q8mN69lVyrrqPCNs88BXbPNsx4JEw4vLAgiEOARbI+EIBzFnbPMntVA8AClnPFssfAgEgEhMCASAZGgIBIBQVAgEgFxgB9zIcQHKAVAH8A9wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/APyHDwD3DwDyRus5l/8A8E8AFQBMyVNANw8A/iJG6zmX/wDwTwAVAEzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmH/wDwHwAQHMlDFw8A/iyQGAWACU+EFvJBAjXwN/AnCAQlhtbfAQgAAT7AAAfPhBbyRbgRFNMiTHBfL0oIAADDGACASAbHAEJTbPPARgdAAU8BKAABxx8BKABCsgB2zzJHgAWghCv+Q9XWMsfyz8BDbdDG2eeAnAhAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzABFu1E0NQB+GLbPGwSIgAO+kABAdMfWQ==';
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeAddress(owner);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_SampleTactContract', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (SampleTactContract_errors[res.exitCode]) {
@@ -350,7 +377,7 @@ export class SampleTactContract implements Contract {
             body = beginCell().store(storeAdd(message)).endCell();
         }
         if (message === 'increment') {
-            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
             body = beginCell().store(storeDeploy(message)).endCell();
@@ -362,9 +389,10 @@ export class SampleTactContract implements Contract {
     }
     
     async getCounter(provider: ContractProvider) {
-        let __tuple: TupleItem[] = [];
-        let result = await provider.get('counter', __tuple);
-        return result.stack.readBigNumber();
+        let builder = new TupleBuilder();
+        let source = (await provider.get('counter', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
     }
     
 }

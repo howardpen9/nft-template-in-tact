@@ -25,49 +25,49 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-(slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 2509716940);
+(slice, ((int))) __gen_read_Deploy(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
-builder __gen_write_DeployOk(builder build_0, (int) v) inline {
+builder __gen_write_DeployOk(builder build_0, (int) v) inline_ref {
     var (v'queryId) = v;
-    build_0 = store_uint(build_0, 3548362785, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
-cell __gen_writecell_DeployOk((int) v) inline {
+cell __gen_writecell_DeployOk((int) v) inline_ref {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
-(slice, ((int))) __gen_read_Add(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3310826759);
+(slice, ((int))) __gen_read_Add(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 2278832834);
     var v'amount = sc_0~load_uint(32);
     return (sc_0, (v'amount));
 }
 
-builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline {
+builder __gen_write_SampleTactContract(builder build_0, (slice, int) v) inline_ref {
     var (v'owner, v'counter) = v;
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_uint(build_0, v'counter, 32);
+    build_0 = build_0.store_uint(v'counter, 32);
     return build_0;
 }
 
-(slice, ((slice, int))) __gen_read_SampleTactContract(slice sc_0) inline {
+(slice, ((slice, int))) __gen_read_SampleTactContract(slice sc_0) inline_ref {
     var v'owner = sc_0~__tact_load_address();
     var v'counter = sc_0~load_uint(32);
     return (sc_0, (v'owner, v'counter));
 }
 
-(slice, int) __gen_load_SampleTactContract() inline {
+(slice, int) __gen_load_SampleTactContract() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleTactContract();
 }
 
-() __gen_store_SampleTactContract((slice, int) v) impure inline {
+() __gen_store_SampleTactContract((slice, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_SampleTactContract(b, v);
@@ -130,16 +130,6 @@ builder $storeBool(builder $s, int $value) impure {
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell $__gen_SampleTactContract_init(cell sys', slice $owner) {
-    var (($self'owner, $self'counter)) = (null(), null());
-    $self'owner = $owner;
-    $self'counter = 0;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_SampleTactContract(b', ($self'owner, $self'counter));
-    return b'.end_cell();
-}
-
 ((slice, int), ()) $__gen_SampleTactContract_add((slice, int) $self, int $v) impure {
     var (($self'owner, $self'counter)) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -199,7 +189,7 @@ _ $__gen_get_counter() method_id(104984) {
     }
     
     ;; Receive Add message
-    if (op == 3310826759) {
+    if (op == 2278832834) {
         var self = __gen_load_SampleTactContract();
         var msg = in_msg~__gen_read_Add();
         self~$__gen_SampleTactContract_receive_Add(msg);
@@ -208,7 +198,7 @@ _ $__gen_get_counter() method_id(104984) {
     }
     
     ;; Receive Deploy message
-    if (op == 2509716940) {
+    if (op == 2490013878) {
         var self = __gen_load_SampleTactContract();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_SampleTactContract_receive_Deploy(msg);
@@ -232,11 +222,6 @@ _ $__gen_get_counter() method_id(104984) {
     throw(130);
 }
 
-cell init_SampleTactContract(cell sys', slice $$owner) method_id {
-    slice $owner = $$owner;
-    return $__gen_SampleTactContract_init(sys', $owner);
-}
-
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -245,5 +230,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmeKJEr9d91boQYFad4d5uWjgaqUf9CDBHKAERt4Tivn9p";
+    return "ipfs://QmYKz7V3Bppjf82hsMGYCQAWptpC4b4jyVYLkncQajRhgN";
 }

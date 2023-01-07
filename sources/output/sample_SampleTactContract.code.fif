@@ -16,7 +16,6 @@ PROGRAM{
   DECLPROC $storeBool
   DECLPROC $send
   DECLPROC $reply
-  DECLPROC $__gen_SampleTactContract_init
   DECLPROC $__gen_SampleTactContract_add
   DECLPROC $__gen_SampleTactContract_counter
   104984 DECLMETHOD $__gen_get_counter
@@ -24,7 +23,6 @@ PROGRAM{
   DECLPROC $__gen_SampleTactContract_receive_comment_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae
   DECLPROC $__gen_SampleTactContract_receive_Deploy
   DECLPROC recv_internal
-  78809 DECLMETHOD init_SampleTactContract
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
@@ -54,48 +52,48 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
-  __gen_read_Deploy PROCINLINE:<{
+  __gen_read_Deploy PROCREF:<{
     32 LDU
     SWAP
-    2509716940 PUSHINT
+    2490013878 PUSHINT
     EQUAL
     129 THROWIFNOT
     64 LDU
     SWAP
   }>
-  __gen_write_DeployOk PROCINLINE:<{
-    3548362785 PUSHINT
+  __gen_write_DeployOk PROCREF:<{
+    2952335191 PUSHINT
     ROT
     32 STU
     64 STU
   }>
-  __gen_writecell_DeployOk PROCINLINE:<{
+  __gen_writecell_DeployOk PROCREF:<{
     NEWC
     SWAP
     __gen_write_DeployOk INLINECALLDICT
     ENDC
   }>
-  __gen_read_Add PROCINLINE:<{
+  __gen_read_Add PROCREF:<{
     32 LDU
     SWAP
-    3310826759 PUSHINT
+    2278832834 PUSHINT
     EQUAL
     129 THROWIFNOT
     32 LDU
     SWAP
   }>
-  __gen_write_SampleTactContract PROCINLINE:<{
+  __gen_write_SampleTactContract PROCREF:<{
     -ROT
     __tact_store_address INLINECALLDICT
     32 STU
   }>
-  __gen_read_SampleTactContract PROCINLINE:<{
+  __gen_read_SampleTactContract PROCREF:<{
     __tact_load_address INLINECALLDICT
     SWAP
     32 LDU
     -ROT
   }>
-  __gen_load_SampleTactContract PROCINLINE:<{
+  __gen_load_SampleTactContract PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -104,7 +102,7 @@ PROGRAM{
     __gen_read_SampleTactContract INLINECALLDICT
     1 2 BLKDROP2
   }>
-  __gen_store_SampleTactContract PROCINLINE:<{
+  __gen_store_SampleTactContract PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -236,15 +234,6 @@ PROGRAM{
     PUSHNULL
     $send CALLDICT
   }>
-  $__gen_SampleTactContract_init PROC:<{
-    0 PUSHINT
-    s0 s2 XCHG
-    NEWC
-    STREF
-    s0 s2 XCHG
-    __gen_write_SampleTactContract INLINECALLDICT
-    ENDC
-  }>
   $__gen_SampleTactContract_add PROC:<{
     __tact_context_get INLINECALLDICT
     2DROP
@@ -307,7 +296,7 @@ PROGRAM{
       2DROP
     }>
     DUP
-    3310826759 PUSHINT
+    2278832834 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
@@ -320,7 +309,7 @@ PROGRAM{
       __gen_store_SampleTactContract INLINECALLDICT
     }>
     DUP
-    2509716940 PUSHINT
+    2490013878 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
@@ -348,14 +337,11 @@ PROGRAM{
     }>
     130 THROW
   }>
-  init_SampleTactContract PROC:<{
-    $__gen_SampleTactContract_init CALLDICT
-  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d654b4a457239643931626f515946616434643575576a676171556639434442484b41455274345469766e3970} PUSHSLICE
+    x{697066733a2f2f516d594b7a3756334270706a66383268734d475943514157707470433462346a7956594c6b6e6351616a5268674e} PUSHSLICE
   }>
 }END>c
