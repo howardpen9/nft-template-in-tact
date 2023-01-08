@@ -14,7 +14,7 @@ export function printHeader(name: string) {
 
 export function printAddress(address: Address, testnet: boolean = true) {
     console.log("Address: " + address.toString({ testOnly: testnet }));
-    console.log("Explorer: " + "https://" + (testnet ? 'testnet.' : '') + "tonwhales.com/explorer/address/" + address.toString({ testOnly: testnet }));
+    console.log("Explorer: " + "https://" + (testnet ? 'testnet.' : '') + "tonapi.io/account/" + address.toString({ testOnly: testnet }));
     printSeparator();
 }
 
