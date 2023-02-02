@@ -169,7 +169,6 @@ contract NftItem {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue = msgValue - fwdFee;
             if (msg.forward_amount == 0 || msg.forward_amount == null) { 
-                self.owner = msg.new_owner;
                 send(SendParameters{ // 0xd53276db
                     to: msg.response_destination,
                     mode: SendIgnoreErrors,
