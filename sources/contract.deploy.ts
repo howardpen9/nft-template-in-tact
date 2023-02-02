@@ -10,7 +10,7 @@ import { NftCollection } from "./output/sample_NftCollection";
     const string_first = "https://s.getgems.io/nft-staging/c/628f6ab8077060a7a8d52d63/";
     let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRefTail(string_first).endCell();
 
-    let body = beginCell().storeUint(0, 36).storeStringTail("Mint").endCell();
+    let body = beginCell().storeUint(0, 32).storeStringTail("Mint").endCell();
 
     // Parameters
     let owner = Address.parse("YOUR_ADDRESS"); // Replace owner with your address
