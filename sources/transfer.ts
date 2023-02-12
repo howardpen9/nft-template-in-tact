@@ -6,6 +6,7 @@ import { TonClient, WalletContractV4, Address, beginCell } from "ton";
 async function main() {
   const NFT_OWNER = Address.parse("EQDND6yHEzKB82ZGRn58aY9Tt_69Ie_uz73e2VuuJ3fVVXfV");
   const NFT_DST = Address.parse("kQC4hErTeLrqzY05eiwMK4Wpy92QxAfYbgtOP7MhOKNnGoST");
+  const NFT_ITEM = Address.parse("kQD3NpyhJzA2Y-g9Gq_cSAD5IJJwPtnFH7TYcqfWtDnN7ep3");
 
 
   // initialize ton rpc client on testnet
@@ -45,11 +46,11 @@ async function main() {
           secretKey,
           messages: [internal({
               value: msgvalue,
-              to: NFT_DST,
+              to: NFT_ITEM,
               body: msg
           })]
       });
-      console.log('======Sending NFT to ', NFT_DST, ' ======');
+      console.log('======Sending NFT=, NFT_ITEM, ' to ', NFT_DST, ' ======');
 
 
 
