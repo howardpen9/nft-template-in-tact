@@ -1,12 +1,12 @@
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
-import { TonClient, WalletContractV4, Address, beginCell } from "ton";
+import { TonClient, WalletContractV4, Address, beginCell, toNano, internal} from "ton";
 
 
 async function main() {
-  const NFT_OWNER = Address.parse("EQDND6yHEzKB82ZGRn58aY9Tt_69Ie_uz73e2VuuJ3fVVXfV");
-  const NFT_DST = Address.parse("kQC4hErTeLrqzY05eiwMK4Wpy92QxAfYbgtOP7MhOKNnGoST");
-  const NFT_ITEM = Address.parse("kQD3NpyhJzA2Y-g9Gq_cSAD5IJJwPtnFH7TYcqfWtDnN7ep3");
+  const NFT_OWNER = Address.parse("EQDND6yHEzKB82ZGRn58aY9Tt_69Ie_uz73e2VuuJ3fVVXfV"); //wallet contract address of current owner NFT
+  const NFT_DST = Address.parse("EQC4hErTeLrqzY05eiwMK4Wpy92QxAfYbgtOP7MhOKNnGj8Z"); // destination wallet contract address
+  const NFT_ITEM = Address.parse("EQA2D8ZV0EaoXsXCLvQb4J8PBfm_0lEIkNdtcn3-DGJSXmV1"); // NFT item contract address, that will be transfered
 
 
   // initialize ton rpc client on testnet
@@ -14,7 +14,7 @@ async function main() {
   const client = new TonClient({ endpoint });
 
   // open wallet v4 (notice the correct wallet version here)
-  const mnemonic = "multiply voice predict admit hockey fringe flat bike napkin child quote piano year cloud bundle lunch curtain flee crouch injury accuse leisure tray danger"; // your 24 secret words (replace ... with the rest of the words)
+  const mnemonic = "multiply voice predict..."; // your 24 secret words (replace ... with the rest of the words)
   const key = await mnemonicToWalletKey(mnemonic.split(" "));
   const wallet = WalletContractV4.create({ publicKey: key.publicKey, workchain: 0 });
   if (!await client.isContractDeployed(wallet.address)) {
@@ -23,9 +23,11 @@ async function main() {
 
   // open wallet and read the current seqno of the wallet
   const walletContract = client.open(wallet);
-  const walletSender = walletContract.sender(key.secretKey);
   const seqno = await walletContract.getSeqno();
-  const query_id = 0;
+  const queryId = 0;
+  const secretKey = key.secretKey;
+  const msgvalue = toNano("0.05");
+  const forwardfee = toNano(1); // TODO need figure out how it should calculate
 
       //TLB: transfer#5fcc3d14 query_id:uint64 new_owner:address response_destination:address custom_payload:Maybe ^cell forward_amount:coins forward_payload:remainder<slice> = Transfer
       let msg_transfer_body = beginCell()
@@ -34,23 +36,21 @@ async function main() {
         .storeAddress(NFT_DST)
         .storeAddress(NFT_OWNER)
         .storeUint(0,1)
-        .storeCoins(toNano(1))
+        .storeCoins(forwardfee)
         .endCell()
 
 
-      console.log('🛠️Preparing new outgoing massage from deployment wallet. Seqno = ', seqno);
-      console.log('Current deployment wallet balance = ', fromNano(balance).toString(), '💎TON');
-      console.log('Totally supply for deployed Token = ', supply, ', amount = ', amount.toString());
-      await contract.sendTransfer({
+      console.log('🛠️Preparing transfer NFT = ',NFT_ITEM ,' from ', NFT_OWNER);
+      await walletContract.sendTransfer({
           seqno,
           secretKey,
           messages: [internal({
               value: msgvalue,
               to: NFT_ITEM,
-              body: msg
+              body: msg_transfer_body
           })]
       });
-      console.log('======Sending NFT=, NFT_ITEM, ' to ', NFT_DST, ' ======');
+      console.log('======Sending NFT =', NFT_ITEM, ' to ', NFT_DST, ' ======');
 
 
 

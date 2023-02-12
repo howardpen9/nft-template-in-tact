@@ -4,7 +4,7 @@
     "build": "tact --config ./tact.config.json",
     "test": "jest",
     "deploy": "ts-node ./sources/contract.deploy.ts",
-    "transfer": "ts-node ./sources/transfer.ts"
+    "transfer": "ts-node sources/utils/transfer.ts"
   },
   "dependencies": {
     "@orbs-network/ton-access": "^2.2.2",
