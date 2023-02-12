@@ -3,9 +3,11 @@
   "scripts": {
     "build": "tact --config ./tact.config.json",
     "test": "jest",
-    "deploy": "ts-node ./sources/contract.deploy.ts"
+    "deploy": "ts-node ./sources/contract.deploy.ts",
+    "transfer": "ts-node ./sources/transfer.ts"
   },
   "dependencies": {
+    "@orbs-network/ton-access": "^2.2.2",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.14",
     "@types/qs": "^6.9.7",
@@ -16,8 +18,8 @@
     "prando": "^6.0.1",
     "prettier": "^2.5.1",
     "qs": "^6.11.0",
-    "ton": "^13.1.0",
-    "ton-core": ">=0.44.0",
+    "ton": "^13.3.0",
+    "ton-core": "^0.47.1",
     "ton-crypto": "^3.2.0",
     "ton-emulator": "^1.3.0",
     "ton-tact": "^0.9.0",
