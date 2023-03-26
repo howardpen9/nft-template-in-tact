@@ -99,7 +99,8 @@ contract NftCollection {
         return CollectionData{
             next_item_index: self.next_item_index, 
             collection_content: b.toCell(), 
-            owner_address: self.owner_address};
+            owner_address: self.owner_address
+        };
     }
 
     get fun get_nft_address_by_index(item_index: Int): Address?{      
@@ -147,9 +148,10 @@ contract NftItem {
         self.individual_content = individual_content;
         self.is_initialized = false;
     }
+
     receive(msg: Transfer){
         let ctx: Context = context();
-        let msgValue: Int = ctx.value;
+        let msgValue: Int = ctx.value; // Check the gasCost for storage
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
         let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
         msgValue = msgValue - (storageFee + self.gasConsumption);
@@ -166,19 +168,7 @@ contract NftItem {
                     }.toCell()
                 });
         } else {
-            let fwdFee: Int = ctx.readForwardFee();
-            msgValue = msgValue - fwdFee;
-            if (msg.forward_amount == 0 || msg.forward_amount == null) { 
-                send(SendParameters{ // 0xd53276db
-                    to: msg.response_destination,
-                    mode: SendIgnoreErrors,
-                    value: msgValue,
-                    body: Excesses {
-                        query_id: msg.query_id
-                    }.toCell()
-                });
-                self.owner = msg.new_owner; // change current owner to the new_owner
-            } else if (msg.forward_amount > 0) { //  msg: forward_amount => the amount of nano-tons to be sent to the new owner.
+            if (msg.forward_amount > 0) { //  msg: forward_amount => the amount of nano-tons to be sent to the new owner.
                 send(SendParameters{
                     to: msg.new_owner,
                     value: msg.forward_amount,
@@ -190,30 +180,27 @@ contract NftItem {
                         forward_payload: msg.forward_payload
                     }.toCell()
                 }); 
-                self.owner = msg.new_owner; // change current owner to the new_owner
+            }
+            msgValue = msgValue - ctx.readForwardFee(); 
+            if (msg.response_destination != null) { 
                 send(SendParameters{ // 0xd53276db
                     to: msg.response_destination,
-                    value: 0,
-                    mode: SendIgnoreErrors + SendRemainingValue,
+                    mode: SendIgnoreErrors,
+                    value: msgValue,
                     body: Excesses {
                         query_id: msg.query_id
                     }.toCell()
                 });
-            }
+                self.owner = msg.new_owner; // change current owner to the new_owner
+            } 
         }
     }
     
     receive(msg: GetStaticData){ 
-        let nft_init: StateInit = initOf NftItem(
-            self.collection_address, 
-            self.item_index, 
-            self.owner,
-            self.individual_content
-        );
+        let ctx: Context = context();
 
-        let itemAddress: Address = contractAddress(nft_init);
-        send(SendParameters{
-            to: itemAddress,
+        send(SendParameters {
+            to: ctx.sender,
             value: 0,
             mode: 64,  // (return msg amount except gas fees) 
             bounce: true,
@@ -252,12 +239,12 @@ message(0x5fcc3d14) Transfer {
     response_destination: Address; 
     custom_payload: Cell?; 
     forward_amount: Int as coins; 
-    forward_payload: Slice as remaining; // TODO
+    forward_payload: Slice as remaining; 
 }
 message(0x05138d91) OwnershipAssigned{
     query_id: Int as uint64;
     prev_owner: Address;
-    forward_payload: Slice as remaining; // TODO
+    forward_payload: Slice as remaining; 
 }
 message(0xd53276db) Excesses {
     query_id: Int as uint64;
