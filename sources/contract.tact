@@ -156,6 +156,7 @@ contract NftItem {
         let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
         msgValue = msgValue - (storageFee + self.gasConsumption);
 
+        require(ctx.sender == self.owner, "not owner");
         if (self.is_initialized == false) {  // Initial Transfer, aka Minting.
             self.is_initialized = true;
             self.owner = msg.new_owner;
@@ -168,7 +169,7 @@ contract NftItem {
                     }.toCell()
                 });
         } else {
-            if (msg.forward_amount > 0) { //  msg: forward_amount => the amount of nano-tons to be sent to the new owner.
+            if (msg.forward_amount > 0) {
                 send(SendParameters{
                     to: msg.new_owner,
                     value: msg.forward_amount,
