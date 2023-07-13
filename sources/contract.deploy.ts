@@ -14,7 +14,7 @@ import { NftCollection } from "./output/sample_NftCollection";
     let body = beginCell().storeUint(0, 32).storeStringTail("Mint").endCell();
 
     // Parameters
-    let owner = Address.parse("kQAp8i3_3zwdIrK7-bx4iDkTD6ep3v1JV4NtCLaVvyq5dHUA"); // Replace owner with your address
+    let owner = Address.parse("EQD1ptyvitBi3JbHaDQt_6j-15ABn9BqdABTFA1vgzs3Ae6z"); // Replace owner with your address
     let init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
         numerator: 350n, // 350n = 35%
