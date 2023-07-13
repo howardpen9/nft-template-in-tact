@@ -6,10 +6,7 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
-  DECLPROC __tact_create_address
-  DECLPROC __tact_compute_contract_address
-  DECLPROC __tact_dict_set_code
-  DECLPROC __tact_dict_get_code
+  DECLPROC __tact_address_eq
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_string
   DECLPROC __tact_string_builder_end
@@ -28,12 +25,9 @@ PROGRAM{
   DECLPROC __gen_GetNftData_to_external
   DECLPROC __gen_load_NftItem
   DECLPROC __gen_store_NftItem
-  DECLPROC $contractAddress
   DECLPROC $send
   DECLPROC $__gen_Cell_asSlice
   DECLPROC $__gen_Context_readForwardFee
-  DECLPROC $__gen_NftItem_init
-  DECLPROC $__gen_NftItem_init_child
   DECLPROC $__gen_NftItem_get_nft_data
   102351 DECLMETHOD $__gen_get_get_nft_data
   DECLPROC $__gen_NftItem_receive_Transfer
@@ -47,7 +41,7 @@ PROGRAM{
     BALANCE
     FIRST
   }>
-  __tact_not_null PROC:<{
+  __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -73,49 +67,8 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_create_address PROCINLINE:<{
-    NEWC
-    2 PUSHINT
-    SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    s1 s2 XCHG
-    8 STI
-    256 STU
-    ENDC
-    CTOS
-  }>
-  __tact_compute_contract_address PROCINLINE:<{
-    NEWC
-    0 PUSHINT
-    SWAP
-    2 STU
-    3 PUSHINT
-    SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    s1 s2 XCHG
-    STREF
-    STREF
-    ENDC
-    HASHCU
-    __tact_create_address INLINECALLDICT
-  }>
-  __tact_dict_set_code PROCINLINE:<{
-    s0 s2 XCHG
-    16 PUSHINT
-    DICTUSETREF
-  }>
-  __tact_dict_get_code PROCINLINE:<{
-    SWAP
-    16 PUSHINT
-    DICTUGETREF
-    NULLSWAPIFNOT
-    135 THROWIFNOT
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
   }>
   __tact_string_builder_start PROCINLINE:<{
     NIL
@@ -413,11 +366,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROCREF:<{
-    0 PUSHINT
-    -ROT
-    __tact_compute_contract_address INLINECALLDICT
-  }>
   $send PROCREF:<{
     NEWC
     1 PUSHINT
@@ -457,7 +405,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -473,7 +421,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -505,7 +453,7 @@ PROGRAM{
       TRUE
       __tact_store_bool INLINECALLDICT
       SWAP
-      __tact_not_null CALLDICT
+      __tact_not_null INLINECALLDICT
       SWAP
       STREF
     }>ELSE<{
@@ -532,35 +480,6 @@ PROGRAM{
     DROP
     3 MULCONST
     1 RSHIFT#
-  }>
-  $__gen_NftItem_init PROC:<{
-    FALSE
-    s0 s5 XCHG
-    NEWC
-    STREF
-    s0 s5 XCHG
-    __gen_write_NftItem INLINECALLDICT
-    ENDC
-  }>
-  $__gen_NftItem_init_child PROC:<{
-    s0 s4 XCHG
-    CTOS
-    LDDICT
-    DROP
-    NEWDICT
-    SWAP
-    31210 PUSHINT
-    __tact_dict_get_code INLINECALLDICT
-    SWAP
-    31210 PUSHINT
-    s2 PUSH
-    __tact_dict_set_code INLINECALLDICT
-    NEWC
-    STDICT
-    ENDC
-    4 -ROLL
-    s0 s5 XCHG
-    $__gen_NftItem_init CALLDICT
   }>
   $__gen_NftItem_get_nft_data PROCREF:<{
     __tact_string_builder_start_string INLINECALLDICT
@@ -595,6 +514,10 @@ PROGRAM{
     50000000 PUSHINT
     ADD
     SUB
+    49280 PUSHINT
+    s4 s13 PUSH2
+    __tact_address_eq INLINECALLDICT
+    THROWANYIFNOT
     s10 PUSH
     0 EQINT
     IF:<{
@@ -614,17 +537,33 @@ PROGRAM{
       PUSHNULL
       $send INLINECALLDICT
     }>ELSE<{
-      4 -ROLL
+      s5 PUSH
+      0 GTINT
+      IF:<{
+        FALSE
+        s10 s13 PUSH2
+        2 PUSHINT
+        s0 s10 XCHG
+        __gen_writecell_OwnershipAssigned INLINECALLDICT
+        s3 s0 s10 XC2PU
+        s8 s1 s3 XCHG3
+        s9 s9 XCHG2
+        PUSHNULL
+        PUSHNULL
+        $send INLINECALLDICT
+        s3 s4 XCHG
+      }>ELSE<{
+        s5 POP
+        s5 POP
+      }>
+      4 ROLL
       $__gen_Context_readForwardFee INLINECALLDICT
       SUB
       OVER
-      0 EQINT
-      s2 PUSH
       ISNULL
-      OR
+      NOT
       IF:<{
-        s8 POP
-        2DROP
+        s6 POP
         TRUE
         2 PUSHINT
         s0 s4 XCHG
@@ -635,53 +574,22 @@ PROGRAM{
         PUSHNULL
         $send INLINECALLDICT
       }>ELSE<{
-        DROP
-        DUP
-        0 GTINT
-        IF:<{
-          FALSE
-          2 PUSHINT
-          s6 s9 s3 PUXC2
-          __gen_writecell_OwnershipAssigned INLINECALLDICT
-          s4 PUSH
-          s0 s3 XCHG
-          s0 s4 XCHG
-          s9 s9 XCHG2
-          PUSHNULL
-          PUSHNULL
-          $send INLINECALLDICT
-          TRUE
-          0 PUSHINT
-          66 PUSHINT
-          s0 s4 XCHG
-          __gen_writecell_Excesses INLINECALLDICT
-          s2 s4 XCHG
-          s3 s7 XCHG
-          s1 s2 XCHG
-          PUSHNULL
-          PUSHNULL
-          $send INLINECALLDICT
-        }>ELSE<{
-          5 BLKDROP
-        }>
+        4 BLKDROP
       }>
     }>
   }>
   $__gen_NftItem_receive_GetStaticData PROCINLINE:<{
-    __tact_context_sys GETGLOB
-    s6 s5 s4 PUSH3
-    s6 PUSH
-    $__gen_NftItem_init_child CALLDICT
-    2DUP
-    $contractAddress INLINECALLDICT
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
     TRUE
     0 PUSHINT
     64 PUSHINT
-    s6 s10 s9 XCPU2
+    s4 s8 s7 XCPU2
     __gen_writecell_ReportStaticData INLINECALLDICT
-    5 2 REVERSE
-    s0 s3 s3 XCHG3
-    s0 s4 XCHG
+    s1 s4 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
     $send INLINECALLDICT
   }>
   recv_internal PROC:<{
@@ -754,6 +662,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d63526534635a5544366b4265316351736f627068456141383379576943364763437535336b6a427561614544} PUSHSLICE
+    x{697066733a2f2f516d65686d6b526a7a67516d334c6d53617846627a394d38517556764170357a727738523162564c454c70557156} PUSHSLICE
   }>
 }END>c

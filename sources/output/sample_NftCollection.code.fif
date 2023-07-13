@@ -58,7 +58,7 @@ PROGRAM{
     BALANCE
     FIRST
   }>
-  __tact_not_null PROC:<{
+  __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -421,7 +421,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -437,7 +437,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -469,7 +469,7 @@ PROGRAM{
       TRUE
       __tact_store_bool INLINECALLDICT
       SWAP
-      __tact_not_null CALLDICT
+      __tact_not_null INLINECALLDICT
       SWAP
       STREF
     }>ELSE<{
@@ -705,6 +705,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5258576336746845434c4b58434e737759574d694734734d684c394d444b7779774d4271614570715a417974} PUSHSLICE
+    x{697066733a2f2f516d53773555483444316b7152726436694431756b61693655574b595357556d6153706544475847654c76313668} PUSHSLICE
   }>
 }END>c

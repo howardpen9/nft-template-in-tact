@@ -8,7 +8,7 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
@@ -467,5 +467,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRXWc6thECLKXCNswYWMiG4sMhL9MDKwywMBqaEpqZAyt";
+    return "ipfs://QmSw5UH4D1kqRrd6iD1ukai6UWKYSWUmaSpeDGXGeLv16h";
 }

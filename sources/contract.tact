@@ -4,6 +4,7 @@ struct CollectionData {
     collection_content: Cell;
     owner_address: Address;
 }
+
 struct RoyaltyParams {
     numerator: Int;
     denominator: Int;
@@ -209,9 +210,7 @@ contract NftItem {
                 query_id: msg.query_id,
                 index_id: self.item_index,
                 collection: self.owner
-            }.toCell(),
-            code: nft_init.code,
-            data: nft_init.data
+            }.toCell()
         });
     }
 
@@ -242,24 +241,28 @@ message(0x5fcc3d14) Transfer {
     forward_amount: Int as coins; 
     forward_payload: Slice as remaining; 
 }
+
 message(0x05138d91) OwnershipAssigned{
     query_id: Int as uint64;
     prev_owner: Address;
     forward_payload: Slice as remaining; 
 }
+
 message(0xd53276db) Excesses {
     query_id: Int as uint64;
 }
+
 message(0x2fcb26a2) GetStaticData { 
     query_id: Int as uint64;
 }
+
 message(0x8b771735) ReportStaticData{
     query_id: Int as uint64;
     index_id: Int;
     collection: Address;
 }
-// -------------------------------- Customized Message -------------------------------- //
 
+// -------------------------------- Customized Message -------------------------------- //
 struct GetNftData { 
     is_initialized: Bool;
     index: Int;

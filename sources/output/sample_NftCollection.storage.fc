@@ -1,0 +1,208 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+(cell, cell) $StateInit$_to_external(((cell, cell)) v) inline {
+    var (v'code, v'data) = v; 
+    return (v'code, v'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body_code_data(slice to, int value, int bounce, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: CollectionData
+;; TLB: _ next_item_index:int257 collection_content:^cell owner_address:address = CollectionData
+;;
+
+(int, cell, slice) $CollectionData$_to_external(((int, cell, slice)) v) inline {
+    var (v'next_item_index, v'collection_content, v'owner_address) = v; 
+    return (v'next_item_index, v'collection_content, v'owner_address);
+}
+
+((int, cell, slice)) $CollectionData$_constructor_next_item_index_collection_content_owner_address(int next_item_index, cell collection_content, slice owner_address) inline {
+    return (next_item_index, collection_content, owner_address);
+}
+
+;;
+;; Type: RoyaltyParams
+;; TLB: _ numerator:int257 denominator:int257 destination:address = RoyaltyParams
+;;
+
+builder $RoyaltyParams$_store(builder build_0, (int, int, slice) v) inline {
+    var (v'numerator, v'denominator, v'destination) = v;
+    build_0 = build_0.store_int(v'numerator, 257);
+    build_0 = build_0.store_int(v'denominator, 257);
+    build_0 = __tact_store_address(build_0, v'destination);
+    return build_0;
+}
+
+(slice, ((int, int, slice))) $RoyaltyParams$_load(slice sc_0) inline {
+    var v'numerator = sc_0~load_int(257);
+    var v'denominator = sc_0~load_int(257);
+    var v'destination = sc_0~__tact_load_address();
+    return (sc_0, (v'numerator, v'denominator, v'destination));
+}
+
+(int, int, slice) $RoyaltyParams$_to_external(((int, int, slice)) v) inline {
+    var (v'numerator, v'denominator, v'destination) = v; 
+    return (v'numerator, v'denominator, v'destination);
+}
+
+;;
+;; Type: GetRoyaltyParams
+;; Header: 0x693d3950
+;; TLB: get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams
+;;
+
+(slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1765620048);
+    var v'query_id = sc_0~load_uint(64);
+    return (sc_0, (v'query_id));
+}
+
+;;
+;; Type: ReportRoyaltyParams
+;; Header: 0xa8cb00ad
+;; TLB: report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams
+;;
+
+builder $ReportRoyaltyParams$_store(builder build_0, (int, int, int, slice) v) inline {
+    var (v'query_id, v'numerator, v'denominator, v'destination) = v;
+    build_0 = store_uint(build_0, 2831876269, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_uint(v'numerator, 16);
+    build_0 = build_0.store_uint(v'denominator, 16);
+    build_0 = __tact_store_address(build_0, v'destination);
+    return build_0;
+}
+
+cell $ReportRoyaltyParams$_store_cell((int, int, int, slice) v) inline {
+    return $ReportRoyaltyParams$_store(begin_cell(), v).end_cell();
+}
+
+((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline {
+    return (query_id, numerator, denominator, destination);
+}
+
+;;
+;; Type: Transfer
+;; Header: 0x5fcc3d14
+;; TLB: transfer#5fcc3d14 query_id:uint64 new_owner:address response_destination:address custom_payload:Maybe ^cell forward_amount:coins forward_payload:remainder<slice> = Transfer
+;;
+
+builder $Transfer$_store(builder build_0, (int, slice, slice, cell, int, slice) v) inline_ref {
+    var (v'query_id, v'new_owner, v'response_destination, v'custom_payload, v'forward_amount, v'forward_payload) = v;
+    build_0 = store_uint(build_0, 1607220500, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = __tact_store_address(build_0, v'new_owner);
+    build_0 = __tact_store_address(build_0, v'response_destination);
+    build_0 = ~ null?(v'custom_payload) ? build_0.store_int(true, 1).store_ref(v'custom_payload) : build_0.store_int(false, 1);
+    build_0 = build_0.store_coins(v'forward_amount);
+    build_0 = build_0.store_slice(v'forward_payload);
+    return build_0;
+}
+
+cell $Transfer$_store_cell((int, slice, slice, cell, int, slice) v) inline {
+    return $Transfer$_store(begin_cell(), v).end_cell();
+}
+
+((int, slice, slice, cell, int, slice)) $Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload(int query_id, slice new_owner, slice response_destination, cell custom_payload, int forward_amount, slice forward_payload) inline {
+    return (query_id, new_owner, response_destination, custom_payload, forward_amount, forward_payload);
+}
+
+;;
+;; Type: NftCollection
+;;
+
+builder $NftCollection$_store(builder build_0, (int, slice, (int, int, slice), cell) v) inline {
+    var (v'next_item_index, v'owner_address, (v'royalty_params'numerator, v'royalty_params'denominator, v'royalty_params'destination), v'collection_content) = v;
+    build_0 = build_0.store_uint(v'next_item_index, 32);
+    build_0 = __tact_store_address(build_0, v'owner_address);
+    var build_1 = begin_cell();
+    build_1 = $RoyaltyParams$_store(build_1, (v'royalty_params'numerator, v'royalty_params'denominator, v'royalty_params'destination));
+    build_1 = build_1.store_ref(v'collection_content);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((int, slice, (int, int, slice), cell))) $NftCollection$_load(slice sc_0) inline {
+    var v'next_item_index = sc_0~load_uint(32);
+    var v'owner_address = sc_0~__tact_load_address();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'royalty_params = sc_1~$RoyaltyParams$_load();
+    var v'collection_content = sc_1~load_ref();
+    return (sc_0, (v'next_item_index, v'owner_address, v'royalty_params, v'collection_content));
+}
+
+(slice, ((slice, cell, (int, int, slice)))) $NftCollection$init$_load(slice sc_0) inline {
+    var v'owner_address = sc_0~__tact_load_address();
+    var v'collection_content = sc_0~load_ref();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'royalty_params = sc_1~$RoyaltyParams$_load();
+    return (sc_0, (v'owner_address, v'collection_content, v'royalty_params));
+}
+
+(int, slice, (int, int, slice), cell) $NftCollection$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$NftCollection$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner_address, cell collection_content, (int, int, slice) royalty_params) = $sc~$NftCollection$init$_load();
+        $sc.end_parse();
+        return $NftCollection$_contract_init(owner_address, collection_content, royalty_params);
+    }
+}
+
+() $NftCollection$_contract_store((int, slice, (int, int, slice), cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $NftCollection$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Type: NftItem
+;;
+
+builder $NftItem$init$_store(builder build_0, (slice, int, slice, cell) v) inline {
+    var (v'collection_address, v'item_index, v'owner, v'individual_content) = v;
+    build_0 = __tact_store_address(build_0, v'collection_address);
+    build_0 = build_0.store_int(v'item_index, 257);
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = build_0.store_ref(v'individual_content);
+    return build_0;
+}
+
+(cell, cell) $NftItem$_init_child(cell sys', slice $collection_address, int $item_index, slice $owner, cell $individual_content) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: NftItem
+    cell mine = __tact_dict_get_code(source, 31210);
+    contracts = __tact_dict_set_code(contracts, 31210, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $NftItem$init$_store(b, ($collection_address, $item_index, $owner, $individual_content));
+    return (mine, b.end_cell());
+}

@@ -8,7 +8,7 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
@@ -36,34 +36,8 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-slice __tact_create_address(int chain, int hash) inline {
-    var b = begin_cell();
-    b = b.store_uint(2, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_int(chain, 8);
-    b = b.store_uint(hash, 256);
-    return b.end_cell().begin_parse();
-}
-
-slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
-    var b = begin_cell();
-    b = b.store_uint(0, 2);
-    b = b.store_uint(3, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_ref(code);
-    b = b.store_ref(data);
-    var hash = cell_hash(b.end_cell());
-    return __tact_create_address(chain, hash);
-}
-
-cell __tact_dict_set_code(cell dict, int id, cell code) inline {
-    return udict_set_ref(dict, 16, id, code);
-}
-
-cell __tact_dict_get_code(cell dict, int id) inline {
-    var (data, ok) = udict_get_ref?(dict, 16, id);
-    throw_unless(135, ok);
-    return data;
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
 }
 
 tuple __tact_string_builder_start(builder b) inline {
@@ -256,11 +230,6 @@ builder __gen_write_NftItem(builder build_0, (slice, int, slice, cell, int) v) i
 ;; String ".json"
 slice __gen_str_303397552() asm "B{b5ee9c7241010101000700000a2e6a736f6e9bc05ee0} B>boc <s PUSHSLICE";
 
-slice $contractAddress((cell, cell) $s) impure inline_ref {
-    var (($s'code, $s'data)) = $s;
-    return __tact_compute_contract_address(0, $s'code, $s'data);
-}
-
 () $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
@@ -319,31 +288,6 @@ int $__gen_Context_readForwardFee((int, slice, int, slice) $self) impure inline_
     return (($sc~load_coins() * 3) / 2);
 }
 
-cell $__gen_NftItem_init(cell sys', slice $collection_address, int $item_index, slice $owner, cell $individual_content) {
-    var (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized)) = (null(), null(), null(), null(), null());
-    $self'collection_address = $collection_address;
-    $self'item_index = $item_index;
-    $self'owner = $owner;
-    $self'individual_content = $individual_content;
-    $self'is_initialized = false;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_NftItem(b', ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized));
-    return b'.end_cell();
-}
-
-(cell, cell) $__gen_NftItem_init_child(cell sys', slice $collection_address, int $item_index, slice $owner, cell $individual_content) {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: NftItem
-    cell mine = __tact_dict_get_code(source, 31210);
-    contracts = __tact_dict_set_code(contracts, 31210, mine);
-    cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, $__gen_NftItem_init(sys, $collection_address, $item_index, $owner, $individual_content));
-}
-
 (int, int, slice, slice, cell) $__gen_NftItem_get_nft_data((slice, int, slice, cell, int) $self) impure inline_ref {
     var (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized)) = $self;
     tuple $b = __tact_string_builder_start_string();
@@ -368,21 +312,19 @@ _ $__gen_get_get_nft_data() method_id(102351) {
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
     int $storageFee = (50000000 - min($tonBalanceBeforeMsg, 50000000));
     $msgValue = ($msgValue - ($storageFee + 50000000));
+    throw_unless(49280, __tact_address_eq($ctx'sender, $self'owner));
     if (($self'is_initialized == false)) {
         $self'is_initialized = true;
         $self'owner = $msg'new_owner;
         $send((true, $msg'response_destination, 0, (2 + 64), __gen_writecell_Excesses(($msg'query_id)), null(), null()));
     } else {
-        int $fwdFee = $__gen_Context_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
-        $msgValue = ($msgValue - $fwdFee);
-        if ((($msg'forward_amount == 0) | null?($msg'forward_amount))) {
-            $self'owner = $msg'new_owner;
+        if (($msg'forward_amount > 0)) {
+            $send((false, $msg'new_owner, $msg'forward_amount, 2, __gen_writecell_OwnershipAssigned(($msg'query_id, $self'owner, $msg'forward_payload)), null(), null()));
+        }
+        $msgValue = ($msgValue - $__gen_Context_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw)));
+        if ((~ null?($msg'response_destination))) {
             $send((true, $msg'response_destination, $msgValue, 2, __gen_writecell_Excesses(($msg'query_id)), null(), null()));
             $self'owner = $msg'new_owner;
-        } elseif (($msg'forward_amount > 0)) {
-            $send((false, $msg'new_owner, $msg'forward_amount, 2, __gen_writecell_OwnershipAssigned(($msg'query_id, $self'owner, $msg'forward_payload)), null(), null()));
-            $self'owner = $msg'new_owner;
-            $send((true, $msg'response_destination, 0, (2 + 64), __gen_writecell_Excesses(($msg'query_id)), null(), null()));
         }
     }
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
@@ -391,9 +333,8 @@ _ $__gen_get_get_nft_data() method_id(102351) {
 (((slice, int, slice, cell, int)), ()) $__gen_NftItem_receive_GetStaticData((slice, int, slice, cell, int) $self, (int) $msg) impure inline {
     var ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized) = $self;
     var ($msg'query_id) = $msg;
-    var ($nft_init'code, $nft_init'data) = $__gen_NftItem_init_child(__tact_context_sys, $self'collection_address, $self'item_index, $self'owner, $self'individual_content);
-    slice $itemAddress = $contractAddress(($nft_init'code, $nft_init'data));
-    $send((true, $itemAddress, 0, 64, __gen_writecell_ReportStaticData(($msg'query_id, $self'item_index, $self'owner)), $nft_init'code, $nft_init'data));
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $send((true, $ctx'sender, 0, 64, __gen_writecell_ReportStaticData(($msg'query_id, $self'item_index, $self'owner)), null(), null()));
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
 }
 
@@ -445,5 +386,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmcRe4cZUD6kBe1cQsobphEaA83yWiC6GcCu53kjBuaaED";
+    return "ipfs://QmehmkRjzgQm3LmSaxFbz9M8QuVvAp5zrw8R1bVLELpUqV";
 }
