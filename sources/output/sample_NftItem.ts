@@ -1,5 +1,24 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -45,6 +64,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -99,6 +119,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -168,6 +189,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type CollectionData = {
     $$type: 'CollectionData';
     next_item_index: bigint;
@@ -217,6 +239,7 @@ function dictValueParserCollectionData(): DictionaryValue<CollectionData> {
         }
     }
 }
+
 export type RoyaltyParams = {
     $$type: 'RoyaltyParams';
     numerator: bigint;
@@ -266,6 +289,7 @@ function dictValueParserRoyaltyParams(): DictionaryValue<RoyaltyParams> {
         }
     }
 }
+
 export type GetRoyaltyParams = {
     $$type: 'GetRoyaltyParams';
     query_id: bigint;
@@ -307,6 +331,7 @@ function dictValueParserGetRoyaltyParams(): DictionaryValue<GetRoyaltyParams> {
         }
     }
 }
+
 export type ReportRoyaltyParams = {
     $$type: 'ReportRoyaltyParams';
     query_id: bigint;
@@ -363,6 +388,7 @@ function dictValueParserReportRoyaltyParams(): DictionaryValue<ReportRoyaltyPara
         }
     }
 }
+
 export type Transfer = {
     $$type: 'Transfer';
     query_id: bigint;
@@ -429,6 +455,7 @@ function dictValueParserTransfer(): DictionaryValue<Transfer> {
         }
     }
 }
+
 export type OwnershipAssigned = {
     $$type: 'OwnershipAssigned';
     query_id: bigint;
@@ -480,6 +507,7 @@ function dictValueParserOwnershipAssigned(): DictionaryValue<OwnershipAssigned> 
         }
     }
 }
+
 export type Excesses = {
     $$type: 'Excesses';
     query_id: bigint;
@@ -521,6 +549,7 @@ function dictValueParserExcesses(): DictionaryValue<Excesses> {
         }
     }
 }
+
 export type GetStaticData = {
     $$type: 'GetStaticData';
     query_id: bigint;
@@ -562,6 +591,7 @@ function dictValueParserGetStaticData(): DictionaryValue<GetStaticData> {
         }
     }
 }
+
 export type ReportStaticData = {
     $$type: 'ReportStaticData';
     query_id: bigint;
@@ -613,6 +643,7 @@ function dictValueParserReportStaticData(): DictionaryValue<ReportStaticData> {
         }
     }
 }
+
 export type GetNftData = {
     $$type: 'GetNftData';
     is_initialized: boolean;
@@ -672,34 +703,34 @@ function dictValueParserGetNftData(): DictionaryValue<GetNftData> {
         }
     }
 }
+
+ type NftItem_init_args = {
+    $$type: 'NftItem_init_args';
+    collection_address: Address;
+    item_index: bigint;
+    owner: Address;
+    individual_content: Cell;
+}
+
+function initNftItem_init_args(src: NftItem_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeAddress(src.collection_address);
+        b_0.storeInt(src.item_index, 257);
+        b_0.storeAddress(src.owner);
+        b_0.storeRef(src.individual_content);
+    };
+}
+
 async function NftItem_init(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-    const __init = 'te6ccgEBBgEAOwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQAL9OALkZgKoKmeLCUCAgOeAAOeLCWZlAGTA==';
-    const __code = 'te6ccgECFgEABAkAART/APSkE/S88sgLAQIBYgIDA9jQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghBfzD0Uuo8qMO1E0NQB+GL6QAEBgQEB1wD6QAEB1NIAVUBsFQXbPDYQmhCJEHgQZ1UE4IIQL8smorrjAjDywIIEBQYCAWoPEABQ0x8BghBfzD0UuvLggdM/+kABAfpAAQHSAAGR1JJtAeL6AFFVFRRDMAO6MvhBbyQh+CdvECGhggr68IBmtgihggr68ICgoYIAwIBTTccF8vQqwACPFV8HMzR/f3CAQgTbPBAkEDUSbW3bPOMOyPhCAcxVQFBUzxYSgQEBzwABzxYSzMoAye1UCw0HAsrtRNDUAfhi+kABAYEBAdcA+kABAdTSAFVAbBUF0x8BghAvyyaiuvLggdM/ATEQRRA0QTD4QW8kECNfA39wgEBUNIfbPEFAbW3bPMj4QgHMVUBQVM8WEoEBAc8AAc8WEszKAMntVAwNBEolwgCPFHBTrXIK2zxUEwpIE1CZbW3bPBA0kjU14lUD2zyhIW6zCA0JCgAuyFUgghAFE42RUATLHxLLPwHPFgHPFskAJGwx+gAxcdch+gAx+gAwpwOrAAIojw42f3IE2zxeIRAnbW3bPJJfBOILDQAcyAGCENUydttYyx/LP8kAMshVIIIQi3cXNVAEyx8Syz+BAQHPAAHPFskB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw4AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAE/tfn9qJoagD8MX0gAIDAgIDrgH0gAIDqaQAqoDYK7Z5ARAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAEJMhvAAFvjG1vjALbPBLbPCPbPBIVExQAAtAA3sghwQCYgC0BywcBowHeIYI4Mnyyc0EZ07epqh25jiBwIHGOFAR6qQymMCWoEqAEqgcCpCHAAEUw5jAzqgLPAY4rbwBwjhEjeqkIEm+MAaQDeqkEIMAAFOYzIqUDnFMCb4GmMFjLBwKlWeQwMeLJ0AI82zyLUuanNvbo2zxvIgHJkyFus5YBbyJZzMnoMURAFRUAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAw==';
-    const __system = 'te6cckECGAEABBMAAQHAAQEFoPPVAgEU/wD0pBP0vPLICwMCAWIMBAIBagYFAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzABP7X5/aiaGoA/DF9IACAwICA64B9IACA6mkAKqA2Cu2eQBwQkyG8AAW+MbW+MAts8Ets8I9s8CwoJCAI82zyLUuanNvbo2zxvIgHJkyFus5YBbyJZzMnoMURACgoA3sghwQCYgC0BywcBowHeIYI4Mnyyc0EZ07epqh25jiBwIHGOFAR6qQymMCWoEqAEqgcCpCHAAEUw5jAzqgLPAY4rbwBwjhEjeqkIEm+MAaQDeqkEIMAAFOYzIqUDnFMCb4GmMFjLBwKlWeQwMeLJ0AC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8DAALQA9jQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghBfzD0Uuo8qMO1E0NQB+GL6QAEBgQEB1wD6QAEB1NIAVUBsFQXbPDYQmhCJEHgQZ1UE4IIQL8smorrjAjDywIIXDw0Cyu1E0NQB+GL6QAEBgQEB1wD6QAEB1NIAVUBsFQXTHwGCEC/LJqK68uCB0z8BMRBFEDRBMPhBbyQQI18Df3CAQFQ0h9s8QUBtbds8yPhCAcxVQFBUzxYSgQEBzwABzxYSzMoAye1UDhQAMshVIIIQi3cXNVAEyx8Syz+BAQHPAAHPFskDujL4QW8kIfgnbxAhoYIK+vCAZrYIoYIK+vCAoKGCAMCAU03HBfL0KsAAjxVfBzM0f39wgEIE2zwQJBA1Em1t2zzjDsj4QgHMVUBQVM8WEoEBAc8AAc8WEszKAMntVBYUEARKJcIAjxRwU61yCts8VBMKSBNQmW1t2zwQNJI1NeJVA9s8oSFusxMUEhECKI8ONn9yBNs8XiEQJ21t2zySXwTiFhQAJGwx+gAxcdch+gAx+gAwpwOrAAAuyFUgghAFE42RUATLHxLLPwHPFgHPFskB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusxUAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAAcyAGCENUydttYyx/LP8kAUNMfAYIQX8w9FLry4IHTP/pAAQH6QAEB0gABkdSSbQHi+gBRVRUUQzA/povL';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(collection_address);
-    builder.writeNumber(item_index);
-    builder.writeAddress(owner);
-    builder.writeCell(individual_content);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (NftItem_errors[res.exitCode]) {
-            throw new ComputeError(NftItem_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('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');
+    const __system = Cell.fromBase64('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');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    builder.storeUint(0, 1);
+    initNftItem_init_args({ $$type: 'NftItem_init_args', collection_address, item_index, owner, individual_content })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const NftItem_errors: { [key: number]: { message: string } } = {
@@ -726,18 +757,44 @@ const NftItem_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
     49280: { message: `not owner` },
     62742: { message: `non-sequential NFTs` },
 }
 
+const NftItem_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"CollectionData","header":null,"fields":[{"name":"next_item_index","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"collection_content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"owner_address","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"RoyaltyParams","header":null,"fields":[{"name":"numerator","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"denominator","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"GetRoyaltyParams","header":1765620048,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"ReportRoyaltyParams","header":2831876269,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"numerator","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"denominator","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"Transfer","header":1607220500,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"new_owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":false}},{"name":"custom_payload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"OwnershipAssigned","header":85167505,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"prev_owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"Excesses","header":3576854235,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"GetStaticData","header":801842850,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"ReportStaticData","header":2339837749,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"index_id","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"collection","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"GetNftData","header":null,"fields":[{"name":"is_initialized","type":{"kind":"simple","type":"bool","optional":false}},{"name":"index","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"collection_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"individual_content","type":{"kind":"simple","type":"cell","optional":false}}]},
+]
+
+const NftItem_getters: ABIGetter[] = [
+    {"name":"get_nft_data","arguments":[],"returnType":{"kind":"simple","type":"GetNftData","optional":false}},
+]
+
+const NftItem_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"Transfer"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"GetStaticData"}},
+]
+
 export class NftItem implements Contract {
     
     static async init(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-        return await NftItem_init(collection_address,item_index,owner,individual_content);
+        return await NftItem_init(collection_address, item_index, owner, individual_content);
     }
     
     static async fromInit(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-        const init = await NftItem_init(collection_address,item_index,owner,individual_content);
+        const init = await NftItem_init(collection_address, item_index, owner, individual_content);
         const address = contractAddress(0, init);
         return new NftItem(address, init);
     }
@@ -749,7 +806,10 @@ export class NftItem implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: NftItem_errors
+        types:  NftItem_types,
+        getters: NftItem_getters,
+        receivers: NftItem_receivers,
+        errors: NftItem_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

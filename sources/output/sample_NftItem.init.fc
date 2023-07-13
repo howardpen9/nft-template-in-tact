@@ -26,7 +26,7 @@ cell $__gen_NftItem_init(cell sys', slice $collection_address, int $item_index, 
     var (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized)) = (null(), null(), null(), null(), null());
     $self'collection_address = $collection_address;
     $self'item_index = $item_index;
-    $self'owner = $owner;
+    $self'owner = $collection_address;
     $self'individual_content = $individual_content;
     $self'is_initialized = false;
     var b' = begin_cell();

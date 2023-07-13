@@ -1,310 +1,41 @@
-#pragma version =0.4.1;
+#pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-slice __tact_slice_to_str(slice s) asm "NOP";
+#include "sample_NftItem.headers.fc";
+#include "sample_NftItem.stdlib.fc";
+#include "sample_NftItem.constants.fc";
+#include "sample_NftItem.storage.fc";
 
-int __tact_my_balance() inline {
-    return pair_first(get_balance());
+;;
+;; Contract NftItem functions
+;;
+
+(slice, int, slice, cell, int) $NftItem$_contract_init(slice $collection_address, int $item_index, slice $owner, cell $individual_content) impure inline_ref {
+    var (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized)) = (null(), null(), null(), null(), null());
+    $self'collection_address = $collection_address;
+    $self'item_index = $item_index;
+    $self'owner = $collection_address;
+    $self'individual_content = $individual_content;
+    $self'is_initialized = false;
+    return ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized);
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
-}
-
-(slice, slice) __tact_load_address(slice cs) inline {
-    slice raw = cs~load_msg_addr();
-    __tact_verify_address(raw);
-    return (cs, raw);
-}
-
-builder __tact_store_address(builder b, slice address) inline {
-    __tact_verify_address(address);
-    b = b.store_slice(address);
-    return b;
-}
-
-int __tact_address_eq(slice a, slice b) inline {
-    return equal_slice_bits(a, b);
-}
-
-tuple __tact_string_builder_start(builder b) inline {
-    return tpush(tpush(empty_tuple(), b), null());
-}
-
-tuple __tact_string_builder_start_string() inline {
-    return __tact_string_builder_start(begin_cell());
-}
-
-cell __tact_string_builder_end(tuple builders) inline {
-    (builder b, tuple tail) = uncons(builders);
-    cell c = b.end_cell();
-    while(~ null?(tail)) {
-        (b, tail) = uncons(tail);
-        c = b.store_ref(c).end_cell();
-    }
-    return c;
-}
-
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
-    int sliceRefs = slice_refs(sc);
-    int sliceBits = slice_bits(sc);
-
-    while((sliceBits > 0) | (sliceRefs > 0)) {
-
-        ;; Load the current builder
-        (builder b, tuple tail) = uncons(builders);
-        int remBytes = 127 - (builder_bits(b) / 8);
-        int exBytes = sliceBits / 8;
-
-        ;; Append bits
-        int amount = min(remBytes, exBytes);
-        if (amount > 0) {
-            slice read = sc~load_bits(amount * 8);
-            b = b.store_slice(read);
-        }
-
-        ;; Update builders
-        builders = cons(b, tail);
-
-        ;; Check if we need to add a new cell and continue
-        if (exBytes - amount > 0) {
-            var bb = begin_cell();
-            builders = cons(bb, builders);
-            sliceBits = (exBytes - amount) * 8;
-        } elseif (sliceRefs > 0) {
-            sc = sc~load_ref().begin_parse();
-            sliceRefs = slice_refs(sc);
-            sliceBits = slice_bits(sc);
-        } else {
-            sliceBits = 0;
-            sliceRefs = 0;
-        }
-    }
-
-    return ((builders), ());
-}
-
-slice __tact_int_to_string(int src) inline_ref {
-    var b = begin_cell();
-    if (src < 0) {
-        b = b.store_uint(45, 8);
-        src = - src;
-    }
-
-    if (src < 1000000000000000000000000000000) {
-        int len = 0;
-        int value = 0;
-        int mult = 1;
-        do {
-            (src, int res) = src.divmod(10);
-            value = value + (res + 48) * mult;
-            mult = mult * 256;
-            len = len + 1;
-        } until (src == 0);
-
-        b = b.store_uint(value, len * 8);
-    } else {
-        tuple t = empty_tuple();
-        int len = 0;
-        do {
-            int digit = src % 10;
-            t~tpush(digit);
-            len = len + 1;
-            src = src / 10;
-        } until (src == 0);
-
-        int c = len - 1;
-        repeat(len) {
-            int v = t.at(c);
-            b = b.store_uint(v + 48, 8);
-            c = c - 1;
-        }
-    }
-    return b.end_cell().begin_parse();
-}
-
-(slice, ((int, slice, slice, cell, int, slice))) __gen_read_Transfer(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1607220500);
-    var v'query_id = sc_0~load_uint(64);
-    var v'new_owner = sc_0~__tact_load_address();
-    var v'response_destination = sc_0~__tact_load_address();
-    var v'custom_payload = sc_0~load_int(1) ? sc_0~load_ref() : null();
-    var v'forward_amount = sc_0~load_coins();
-    var v'forward_payload = sc_0;
-    return (sc_0, (v'query_id, v'new_owner, v'response_destination, v'custom_payload, v'forward_amount, v'forward_payload));
-}
-
-builder __gen_write_OwnershipAssigned(builder build_0, (int, slice, slice) v) inline {
-    var (v'query_id, v'prev_owner, v'forward_payload) = v;
-    build_0 = store_uint(build_0, 85167505, 32);
-    build_0 = build_0.store_uint(v'query_id, 64);
-    build_0 = __tact_store_address(build_0, v'prev_owner);
-    build_0 = build_0.store_slice(v'forward_payload);
-    return build_0;
-}
-
-cell __gen_writecell_OwnershipAssigned((int, slice, slice) v) inline_ref {
-    return __gen_write_OwnershipAssigned(begin_cell(), v).end_cell();
-}
-
-builder __gen_write_Excesses(builder build_0, (int) v) inline {
-    var (v'query_id) = v;
-    build_0 = store_uint(build_0, 3576854235, 32);
-    build_0 = build_0.store_uint(v'query_id, 64);
-    return build_0;
-}
-
-cell __gen_writecell_Excesses((int) v) inline_ref {
-    return __gen_write_Excesses(begin_cell(), v).end_cell();
-}
-
-(slice, ((int))) __gen_read_GetStaticData(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 801842850);
-    var v'query_id = sc_0~load_uint(64);
-    return (sc_0, (v'query_id));
-}
-
-builder __gen_write_ReportStaticData(builder build_0, (int, int, slice) v) inline {
-    var (v'query_id, v'index_id, v'collection) = v;
-    build_0 = store_uint(build_0, 2339837749, 32);
-    build_0 = build_0.store_uint(v'query_id, 64);
-    build_0 = build_0.store_int(v'index_id, 257);
-    build_0 = __tact_store_address(build_0, v'collection);
-    return build_0;
-}
-
-cell __gen_writecell_ReportStaticData((int, int, slice) v) inline_ref {
-    return __gen_write_ReportStaticData(begin_cell(), v).end_cell();
-}
-
-builder __gen_write_NftItem(builder build_0, (slice, int, slice, cell, int) v) inline {
-    var (v'collection_address, v'item_index, v'owner, v'individual_content, v'is_initialized) = v;
-    build_0 = __tact_store_address(build_0, v'collection_address);
-    build_0 = build_0.store_int(v'item_index, 257);
-    build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_ref(v'individual_content);
-    build_0 = build_0.store_int(v'is_initialized, 1);
-    return build_0;
-}
-
-(slice, ((slice, int, slice, cell, int))) __gen_read_NftItem(slice sc_0) inline {
-    var v'collection_address = sc_0~__tact_load_address();
-    var v'item_index = sc_0~load_int(257);
-    var v'owner = sc_0~__tact_load_address();
-    var v'individual_content = sc_0~load_ref();
-    var v'is_initialized = sc_0~load_int(1);
-    return (sc_0, (v'collection_address, v'item_index, v'owner, v'individual_content, v'is_initialized));
-}
-
-(int, int, slice, slice, cell) __gen_GetNftData_to_external(((int, int, slice, slice, cell)) v) inline {
-    var (v'is_initialized, v'index, v'collection_address, v'owner_address, v'individual_content) = v; 
-    return (v'is_initialized, v'index, v'collection_address, v'owner_address, v'individual_content);
-}
-
-(slice, int, slice, cell, int) __gen_load_NftItem() inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_NftItem();
-}
-
-() __gen_store_NftItem((slice, int, slice, cell, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = __gen_write_NftItem(b, v);
-    set_data(b.end_cell());
-}
-
-;; String ".json"
-slice __gen_str_303397552() asm "B{b5ee9c7241010101000700000a2e6a736f6e9bc05ee0} B>boc <s PUSHSLICE";
-
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
-    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
-    builder $b = begin_cell();
-    $b = store_int($b, 1, 2);
-    $b = __tact_store_bool($b, $params'bounce);
-    $b = store_int($b, 0, 3);
-    $b = __tact_store_address($b, $params'to);
-    $b = store_coins($b, $params'value);
-    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = __tact_store_bool($b, true);
-        builder $bc = begin_cell();
-        $bc = __tact_store_bool($bc, false);
-        $bc = __tact_store_bool($bc, false);
-        if ((~ null?($params'code))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'code));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        if ((~ null?($params'data))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'data));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        $bc = __tact_store_bool($bc, false);
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, end_cell($bc));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $body = $params'body;
-    if ((~ null?($body))) {
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, __tact_not_null($body));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $c = end_cell($b);
-    send_raw_message($c, $params'mode);
-}
-
-slice $__gen_Cell_asSlice(cell $self) impure inline_ref {
-    var ($self) = $self;
-    return begin_parse($self);
-}
-
-int $__gen_Context_readForwardFee((int, slice, int, slice) $self) impure inline_ref {
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    slice $sc = $self'raw;
-    $sc~load_coins();
-    $sc~skip_bits(1);
-    $sc~load_coins();
-    return (($sc~load_coins() * 3) / 2);
-}
-
-(int, int, slice, slice, cell) $__gen_NftItem_get_nft_data((slice, int, slice, cell, int) $self) impure inline_ref {
+((slice, int, slice, cell, int), (int, int, slice, slice, cell)) $NftItem$_fun_get_nft_data((slice, int, slice, cell, int) $self) impure inline_ref {
     var (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    slice $collectionData = __tact_slice_to_str($__gen_Cell_asSlice($self'individual_content));
+    slice $collectionData = __tact_slice_to_str($Cell$_fun_asSlice($self'individual_content));
     $b~__tact_string_builder_append($collectionData);
     $b~__tact_string_builder_append(__tact_int_to_string($self'item_index));
-    $b~__tact_string_builder_append(__gen_str_303397552());
-    return ($self'is_initialized, $self'item_index, $self'collection_address, $self'owner, __tact_string_builder_end($b));
+    $b~__tact_string_builder_append(__gen_slice_string_2f62f0bd20aef2d2b17f109c6aba1bc3dd7a55db89e349f2659bf698f80ce9c6());
+    return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), $GetNftData$_constructor_is_initialized_index_collection_address_owner_address_individual_content($self'is_initialized, $self'item_index, $self'collection_address, $self'owner, __tact_string_builder_end($b)));
 }
 
-_ $__gen_get_get_nft_data() method_id(102351) {
-    var self = __gen_load_NftItem();
-    var res = $__gen_NftItem_get_nft_data(self);
-    return __gen_GetNftData_to_external(res);
-}
+;;
+;; Receivers of a Contract NftItem
+;;
 
-(((slice, int, slice, cell, int)), ()) $__gen_NftItem_receive_Transfer((slice, int, slice, cell, int) $self, (int, slice, slice, cell, int, slice) $msg) impure inline {
+(((slice, int, slice, cell, int)), ()) $NftItem$_internal_binary_Transfer((slice, int, slice, cell, int) $self, (int, slice, slice, cell, int, slice) $msg) impure inline {
     var ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized) = $self;
     var ($msg'query_id, $msg'new_owner, $msg'response_destination, $msg'custom_payload, $msg'forward_amount, $msg'forward_payload) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -312,79 +43,112 @@ _ $__gen_get_get_nft_data() method_id(102351) {
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
     int $storageFee = (50000000 - min($tonBalanceBeforeMsg, 50000000));
     $msgValue = ($msgValue - ($storageFee + 50000000));
-    throw_unless(49280, __tact_address_eq($ctx'sender, $self'owner));
+    throw_unless(49280, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     if (($self'is_initialized == false)) {
         $self'is_initialized = true;
         $self'owner = $msg'new_owner;
-        $send((true, $msg'response_destination, 0, (2 + 64), __gen_writecell_Excesses(($msg'query_id)), null(), null()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($msg'response_destination, 0, (2 + 64), $Excesses$_store_cell($Excesses$_constructor_query_id($msg'query_id))));
     } else {
         if (($msg'forward_amount > 0)) {
-            $send((false, $msg'new_owner, $msg'forward_amount, 2, __gen_writecell_OwnershipAssigned(($msg'query_id, $self'owner, $msg'forward_payload)), null(), null()));
+            $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'new_owner, $msg'forward_amount, 2, false, $OwnershipAssigned$_store_cell($OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload($msg'query_id, $self'owner, $msg'forward_payload))));
         }
-        $msgValue = ($msgValue - $__gen_Context_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw)));
+        $msgValue = ($msgValue - $Context$_fun_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw)));
         if ((~ null?($msg'response_destination))) {
-            $send((true, $msg'response_destination, $msgValue, 2, __gen_writecell_Excesses(($msg'query_id)), null(), null()));
+            $global_send($SendParameters$_constructor_to_mode_value_body($msg'response_destination, 2, $msgValue, $Excesses$_store_cell($Excesses$_constructor_query_id($msg'query_id))));
             $self'owner = $msg'new_owner;
         }
     }
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
 }
 
-(((slice, int, slice, cell, int)), ()) $__gen_NftItem_receive_GetStaticData((slice, int, slice, cell, int) $self, (int) $msg) impure inline {
+(((slice, int, slice, cell, int)), ()) $NftItem$_internal_binary_GetStaticData((slice, int, slice, cell, int) $self, (int) $msg) impure inline {
     var ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized) = $self;
     var ($msg'query_id) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send((true, $ctx'sender, 0, 64, __gen_writecell_ReportStaticData(($msg'query_id, $self'item_index, $self'owner)), null(), null()));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($ctx'sender, 0, 64, true, $ReportStaticData$_store_cell($ReportStaticData$_constructor_query_id_index_id_collection($msg'query_id, $self'item_index, $self'owner))));
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
 }
 
+;;
+;; Get methods of a Contract NftItem
+;;
 
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+_ %get_nft_data() method_id(102351) {
+    var self = $NftItem$_contract_load();
+    var res = self~$NftItem$_fun_get_nft_data();
+    return $GetNftData$_to_external(res);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmRFsc4HD89CCqoRrnnxxV5Vb7ebKNs5wnyBQJho3j8ieV";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract NftItem
+;;
+
+((slice, int, slice, cell, int), int) $NftItem$_contract_router_internal((slice, int, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
     
     ;; Receive Transfer message
     if (op == 1607220500) {
-        var self = __gen_load_NftItem();
-        var msg = in_msg~__gen_read_Transfer();
-        self~$__gen_NftItem_receive_Transfer(msg);
-        __gen_store_NftItem(self);
-        return ();
+        var msg = in_msg~$Transfer$_load();
+        self~$NftItem$_internal_binary_Transfer(msg);
+        return (self, true);
     }
     
     ;; Receive GetStaticData message
     if (op == 801842850) {
-        var self = __gen_load_NftItem();
-        var msg = in_msg~__gen_read_GetStaticData();
-        self~$__gen_NftItem_receive_GetStaticData(msg);
-        __gen_store_NftItem(self);
-        return ();
+        var msg = in_msg~$GetStaticData$_load();
+        self~$NftItem$_internal_binary_GetStaticData(msg);
+        return (self, true);
     }
     
-    throw(130);
+    return (self, false);
 }
 
-_ supported_interfaces() method_id {
-    return (
-        "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
-    );
-}
-
-_ get_abi_ipfs() {
-    return "ipfs://QmehmkRjzgQm3LmSaxFbz9M8QuVvAp5zrw8R1bVLELpUqV";
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $NftItem$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$NftItem$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $NftItem$_contract_store(self);
 }

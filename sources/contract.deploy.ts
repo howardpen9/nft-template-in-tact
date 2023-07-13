@@ -26,9 +26,8 @@ import { NftCollection } from "./output/sample_NftCollection";
     let deployAmount = toNano("0.5");
     let testnet = true;
 
-    printHeader("sampleNFT_Contract");
-    printAddress(address);
-
     // Do deploy
     await deploy(init, deployAmount, body, testnet);
+    printHeader("sampleNFT_Contract");
+    printAddress(address);
 })();

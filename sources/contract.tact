@@ -49,11 +49,10 @@ contract NftCollection {
 
         self.mint(ctx.sender, msgValue);
     }
+
     // ===== Private Methods ===== //
     fun mint(sender: Address, msgValue: Int) {
-        // TODO: if (is_initialized == false) { // next_item_index == -1 }
         require(self.next_item_index >= 0, "non-sequential NFTs");
-
         let nft_init: StateInit = self.getNftItemInit(self.next_item_index);
         send(SendParameters{
                 to: contractAddress(nft_init), 
@@ -74,18 +73,20 @@ contract NftCollection {
         self.next_item_index = self.next_item_index + 1;
     }
 
-    receive(msg: GetRoyaltyParams) {    // TODO: Test Royalties Fee
+    receive(msg: GetRoyaltyParams) {   
+        let ctx: Context = context(); // get sender Info
         send(SendParameters{
-                to: myAddress(),
-                value: 0,
-                mode: 64, 
-                bounce: false,
-                body: ReportRoyaltyParams {
-                    query_id: msg.query_id,
-                    numerator:  self.royalty_params.numerator,
-                    denominator: self.royalty_params.denominator,
-                    destination: self.owner_address
-                }.toCell()
+            to: ctx.sender,
+                // to: myAddress(),
+            value: 0,
+            mode: 64, 
+            bounce: false,
+            body: ReportRoyaltyParams {
+                query_id: msg.query_id,
+                numerator:  self.royalty_params.numerator,
+                denominator: self.royalty_params.denominator,
+                destination: self.owner_address
+            }.toCell()
         });        
     }
 
@@ -145,13 +146,14 @@ contract NftItem {
     ){
         self.collection_address = collection_address;
         self.item_index = item_index;
-        self.owner = owner;
+        self.owner = collection_address;
         self.individual_content = individual_content;
         self.is_initialized = false;
     }
 
     receive(msg: Transfer){
         let ctx: Context = context();
+        
         let msgValue: Int = ctx.value; // Check the gasCost for storage
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
         let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);

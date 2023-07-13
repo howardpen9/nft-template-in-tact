@@ -3,11 +3,13 @@ SETCP0
   recv_internal: 
 
   4: 
+    s1 POP
+    s2 PUSH
     0 PUSHINT
     s0 s5 XCHG
     NEWC
     STREF
-    s0 s5 XCHG
+    s4 s4 s5 XCHG3
     s5 s4 XCHG2
     STSLICER
     s1 s2 XCHG
