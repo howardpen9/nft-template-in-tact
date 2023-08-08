@@ -672,7 +672,9 @@ PROGRAM{
     $NftCollection$_fun_mint INLINECALLDICT
   }>
   $NftCollection$_internal_binary_GetRoyaltyParams PROCINLINE:<{
-    MYADDR
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
     0 PUSHINT
     64 PUSHINT
     FALSE

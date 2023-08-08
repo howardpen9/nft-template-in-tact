@@ -12,7 +12,7 @@ PROGRAM{
   DECLPROC ?fun_ref_2d127b53521fc3e1;
   DECLPROC ?fun_ref_4c1b712d608842b1;
   DECLPROC ?fun_ref_5881aa83d71473bc;
-  DECLPROC ?fun_ref_658eec4f23eaf99a;
+  DECLPROC ?fun_ref_62f5217c2722c232;
   DECLPROC ?fun_ref_6fca680fb2b509b2;
   DECLPROC ?fun_ref_706c942068288f86;
   DECLPROC ?fun_ref_958ac127aaa91cef;
@@ -54,7 +54,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_22daadcfe20c6bf3 INLINECALLDICT
     2 6 BLKSWAP
-    ?fun_ref_658eec4f23eaf99a INLINECALLDICT
+    ?fun_ref_62f5217c2722c232 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -391,7 +391,7 @@ PROGRAM{
     s1 POP
     s6 s7 s3 PU2XC
   }>
-  ?fun_ref_658eec4f23eaf99a PROCREF:<{
+  ?fun_ref_62f5217c2722c232 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     s0 s1 XCHG
@@ -423,7 +423,10 @@ PROGRAM{
       64 LDU
       s0 s1 XCHG
       s1 POP
-      MYADDR
+      1 GETGLOBVAR
+      4 UNTUPLE
+      s2 s3 XCHG
+      3 BLKDROP
       0 PUSHINT
       64 PUSHINT
       0 PUSHINT

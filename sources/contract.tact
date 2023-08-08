@@ -1,15 +1,5 @@
-
-struct CollectionData {
-    next_item_index: Int;
-    collection_content: Cell;
-    owner_address: Address;
-}
-
-struct RoyaltyParams {
-    numerator: Int;
-    denominator: Int;
-    destination: Address;
-}
+const minTonsForStorage: Int = ton("0.03");
+const gasConsumption: Int = ton("0.03");
 
 message(0x693d3950) GetRoyaltyParams {
     query_id: Int as uint64;
@@ -23,18 +13,12 @@ message(0xa8cb00ad) ReportRoyaltyParams {
 }
 
 contract NftCollection {
-    const minTonsForStorage: Int = ton("0.03");
-    const gasConsumption: Int = ton("0.03");
     next_item_index: Int as uint32 = 0;
     owner_address: Address;
     royalty_params: RoyaltyParams;                      
     collection_content: Cell;   
 
-    init(
-        owner_address: Address, 
-        collection_content: Cell, 
-        royalty_params: RoyaltyParams
-    ){
+    init(owner_address: Address, collection_content: Cell, royalty_params: RoyaltyParams){
         self.owner_address = owner_address;
         self.collection_content = collection_content; 
         self.royalty_params = royalty_params;
@@ -42,10 +26,11 @@ contract NftCollection {
 
     receive("Mint"){
         let ctx: Context = context(); // get sender Info
+
         let msgValue: Int = ctx.value;
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
-        let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
-        msgValue = msgValue - (storageFee + self.gasConsumption);
+        let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
+        msgValue = msgValue - (storageFee + gasConsumption);
 
         self.mint(ctx.sender, msgValue);
     }
@@ -77,7 +62,6 @@ contract NftCollection {
         let ctx: Context = context(); // get sender Info
         send(SendParameters{
             to: ctx.sender,
-                // to: myAddress(),
             value: 0,
             mode: 64, 
             bounce: false,
@@ -97,7 +81,6 @@ contract NftCollection {
         let collectionDataString: String = self.collection_content.asSlice().asString();
         b.append(collectionDataString);
         b.append("meta.json"); // You can changed this your self.
-
         return CollectionData{
             next_item_index: self.next_item_index, 
             collection_content: b.toCell(), 
@@ -126,24 +109,28 @@ contract NftCollection {
     }
 }
 
+struct CollectionData {
+    next_item_index: Int;
+    collection_content: Cell;
+    owner_address: Address;
+}
+
+struct RoyaltyParams {
+    numerator: Int;
+    denominator: Int;
+    destination: Address;
+}
+
 // ---------------------------------------------------------------------------------------------------- //
 
 contract NftItem {
-    const minTonsForStorage: Int = ton("0.05");
-    const gasConsumption: Int = ton("0.05");
-
     collection_address: Address;
     item_index: Int; 
     owner: Address;
     individual_content: Cell;
     is_initialized: Bool;
 
-    init(
-        collection_address: Address, 
-        item_index: Int,
-        owner: Address, 
-        individual_content: Cell
-    ){
+    init(collection_address: Address, item_index: Int, owner: Address, individual_content: Cell){
         self.collection_address = collection_address;
         self.item_index = item_index;
         self.owner = collection_address;
@@ -153,11 +140,11 @@ contract NftItem {
 
     receive(msg: Transfer){
         let ctx: Context = context();
-        
+    
         let msgValue: Int = ctx.value; // Check the gasCost for storage
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
-        let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
-        msgValue = msgValue - (storageFee + self.gasConsumption);
+        let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
+        msgValue = msgValue - (storageFee + gasConsumption);
 
         require(ctx.sender == self.owner, "not owner");
         if (self.is_initialized == false) {  // Initial Transfer, aka Minting.
@@ -167,10 +154,8 @@ contract NftItem {
                 to: msg.response_destination,
                 value: 0,
                 mode:  SendIgnoreErrors + SendRemainingValue,
-                body: Excesses { //0xd53276db
-                        query_id: msg.query_id
-                    }.toCell()
-                });
+                body: Excesses { query_id: msg.query_id }.toCell() //0xd53276db
+            });
         } else {
             if (msg.forward_amount > 0) {
                 send(SendParameters{
@@ -187,13 +172,11 @@ contract NftItem {
             }
             msgValue = msgValue - ctx.readForwardFee(); 
             if (msg.response_destination != null) { 
-                send(SendParameters{ // 0xd53276db
+                send(SendParameters{ 
                     to: msg.response_destination,
                     mode: SendIgnoreErrors,
                     value: msgValue,
-                    body: Excesses {
-                        query_id: msg.query_id
-                    }.toCell()
+                    body: Excesses { query_id: msg.query_id }.toCell() // 0xd53276db
                 });
                 self.owner = msg.new_owner; // change current owner to the new_owner
             } 
@@ -202,7 +185,6 @@ contract NftItem {
     
     receive(msg: GetStaticData){ 
         let ctx: Context = context();
-
         send(SendParameters {
             to: ctx.sender,
             value: 0,

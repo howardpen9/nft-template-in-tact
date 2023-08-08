@@ -80,7 +80,8 @@
 (((int, slice, (int, int, slice), cell)), ()) $NftCollection$_internal_binary_GetRoyaltyParams((int, slice, (int, int, slice), cell) $self, (int) $msg) impure inline {
     var ($self'next_item_index, $self'owner_address, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content) = $self;
     var ($msg'query_id) = $msg;
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body(my_address(), 0, 64, false, $ReportRoyaltyParams$_store_cell($ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination($msg'query_id, $self'royalty_params'numerator, $self'royalty_params'denominator, $self'owner_address))));
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($ctx'sender, 0, 64, false, $ReportRoyaltyParams$_store_cell($ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination($msg'query_id, $self'royalty_params'numerator, $self'royalty_params'denominator, $self'owner_address))));
     return (($self'next_item_index, $self'owner_address, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content), ());
 }
 

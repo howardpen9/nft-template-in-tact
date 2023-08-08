@@ -41,8 +41,8 @@
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     int $msgValue = $ctx'value;
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
-    int $storageFee = (50000000 - min($tonBalanceBeforeMsg, 50000000));
-    $msgValue = ($msgValue - ($storageFee + 50000000));
+    int $storageFee = (30000000 - min($tonBalanceBeforeMsg, 30000000));
+    $msgValue = ($msgValue - ($storageFee + 30000000));
     throw_unless(49280, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     if (($self'is_initialized == false)) {
         $self'is_initialized = true;
