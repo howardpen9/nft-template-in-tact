@@ -2,6 +2,7 @@
 
 ```bash
 yarn build # To build contract
+yarn test # To run test cases
 yarn deploy # To deploy contract
 ```
 
