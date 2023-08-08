@@ -1,5 +1,5 @@
 import { beginCell, contractAddress, toNano, Cell, Address } from "ton";
-import { testAddress } from "ton-emulator";
+
 import { deploy } from "./utils/deploy";
 import { printAddress, printDeploy, printHeader } from "./utils/print";
 // ================================================================= //
