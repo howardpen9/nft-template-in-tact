@@ -48,12 +48,6 @@ cell __tact_string_builder_end(tuple builders) inline;
 ;; __tact_string_builder_append
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
 
-;; $RoyaltyParams$_store
-builder $RoyaltyParams$_store(builder build_0, (int, int, slice) v) inline;
-
-;; $RoyaltyParams$_load
-(slice, ((int, int, slice))) $RoyaltyParams$_load(slice sc_0) inline;
-
 ;; $GetRoyaltyParams$_load
 (slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline;
 
@@ -62,6 +56,12 @@ builder $ReportRoyaltyParams$_store(builder build_0, (int, int, int, slice) v) i
 
 ;; $ReportRoyaltyParams$_store_cell
 cell $ReportRoyaltyParams$_store_cell((int, int, int, slice) v) inline;
+
+;; $RoyaltyParams$_store
+builder $RoyaltyParams$_store(builder build_0, (int, int, slice) v) inline;
+
+;; $RoyaltyParams$_load
+(slice, ((int, int, slice))) $RoyaltyParams$_load(slice sc_0) inline;
 
 ;; $Transfer$_store
 builder $Transfer$_store(builder build_0, (int, slice, slice, cell, int, slice) v) inline_ref;

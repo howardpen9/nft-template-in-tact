@@ -17,14 +17,6 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
-## CollectionData
-TLB: `_ next_item_index:int257 collection_content:^cell owner_address:address = CollectionData`
-Signature: `CollectionData{next_item_index:int257,collection_content:^cell,owner_address:address}`
-
-## RoyaltyParams
-TLB: `_ numerator:int257 denominator:int257 destination:address = RoyaltyParams`
-Signature: `RoyaltyParams{numerator:int257,denominator:int257,destination:address}`
-
 ## GetRoyaltyParams
 TLB: `get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams`
 Signature: `GetRoyaltyParams{query_id:uint64}`
@@ -32,6 +24,14 @@ Signature: `GetRoyaltyParams{query_id:uint64}`
 ## ReportRoyaltyParams
 TLB: `report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams`
 Signature: `ReportRoyaltyParams{query_id:uint64,numerator:uint16,denominator:uint16,destination:address}`
+
+## CollectionData
+TLB: `_ next_item_index:int257 collection_content:^cell owner_address:address = CollectionData`
+Signature: `CollectionData{next_item_index:int257,collection_content:^cell,owner_address:address}`
+
+## RoyaltyParams
+TLB: `_ numerator:int257 denominator:int257 destination:address = RoyaltyParams`
+Signature: `RoyaltyParams{numerator:int257,denominator:int257,destination:address}`
 
 ## Transfer
 TLB: `transfer#5fcc3d14 query_id:uint64 new_owner:address response_destination:address custom_payload:Maybe ^cell forward_amount:coins forward_payload:remainder<slice> = Transfer`
