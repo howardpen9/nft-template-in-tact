@@ -1,18 +1,8 @@
 const minTonsForStorage: Int = ton("0.03");
 const gasConsumption: Int = ton("0.03");
 
-message(0x693d3950) GetRoyaltyParams {
-    query_id: Int as uint64;
-}
-
-message(0xa8cb00ad) ReportRoyaltyParams {
-    query_id: Int as uint64;
-    numerator:  Int as uint16;
-    denominator: Int as uint16;
-    destination: Address;
-}
-
 contract NftCollection {
+
     next_item_index: Int as uint32 = 0;
     owner_address: Address;
     royalty_params: RoyaltyParams;                      
@@ -38,13 +28,14 @@ contract NftCollection {
     // ===== Private Methods ===== //
     fun mint(sender: Address, msgValue: Int) {
         require(self.next_item_index >= 0, "non-sequential NFTs");
+        
         let nft_init: StateInit = self.getNftItemInit(self.next_item_index);
         send(SendParameters{
                 to: contractAddress(nft_init), 
                 value: msgValue, 
                 bounce: false,
                 mode: SendIgnoreErrors,
-                body: Transfer{
+                body: Transfer {
                     query_id: 0,
                     new_owner: sender,
                     response_destination: self.owner_address,
@@ -74,9 +65,8 @@ contract NftCollection {
         });        
     }
 
-
     // ------------------ Get Function  ------------------ //
-    get fun get_collection_data(): CollectionData{     
+    get fun get_collection_data(): CollectionData {     
         let b: StringBuilder = beginString();
         let collectionDataString: String = self.collection_content.asSlice().asString();
         b.append(collectionDataString);
@@ -109,6 +99,17 @@ contract NftCollection {
     }
 }
 
+message(0x693d3950) GetRoyaltyParams {
+    query_id: Int as uint64;
+}
+
+message(0xa8cb00ad) ReportRoyaltyParams {
+    query_id: Int as uint64;
+    numerator:  Int as uint16;
+    denominator: Int as uint16;
+    destination: Address;
+}
+
 struct CollectionData {
     next_item_index: Int;
     collection_content: Cell;
@@ -121,6 +122,7 @@ struct RoyaltyParams {
     destination: Address;
 }
 
+// ---------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------------------------------------------------------------- //
 
 contract NftItem {
@@ -146,8 +148,10 @@ contract NftItem {
         let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
         msgValue = msgValue - (storageFee + gasConsumption);
 
+        // Only Owner of the this NFT Item can transfer it.
         require(ctx.sender == self.owner, "not owner");
-        if (self.is_initialized == false) {  // Initial Transfer, aka Minting.
+
+        if (self.is_initialized == false) {  // Initial Transfer, aka the "Minting" of the NFT
             self.is_initialized = true;
             self.owner = msg.new_owner;
             send(SendParameters{
@@ -246,7 +250,6 @@ message(0x8b771735) ReportStaticData{
     collection: Address;
 }
 
-// -------------------------------- Customized Message -------------------------------- //
 struct GetNftData { 
     is_initialized: Bool;
     index: Int;

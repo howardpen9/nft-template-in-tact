@@ -12,13 +12,14 @@ import { NftCollection } from "./output/sample_NftCollection";
     });
 
     // Parameters
-    let address = Address.parse("YOUR ADDRESS"); // Replace owner with your address
-    let contract_address = await NftCollection.fromAddress(address);
+    let collection_address = Address.parse("YOUR Collection ADDRESS");
+    let contract_address = await NftCollection.fromAddress(collection_address);
     let client_open = client.open(contract_address);
 
     const nft_index = 0n;
     let address_by_index = await client_open.getGetNftAddressByIndex(nft_index);
     printHeader("sampleNFT_Contract");
-    printAddress(address);
-    console.log("NFT Address: ", address_by_index);
+    // printAddress(collection_address
+    // printHeader("1234");
+    console.log("NFT ID[" + nft_index + "]: " + address_by_index);
 })();
