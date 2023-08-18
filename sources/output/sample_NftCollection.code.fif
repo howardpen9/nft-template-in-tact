@@ -14,11 +14,11 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_string
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
-  DECLPROC $RoyaltyParams$_store
-  DECLPROC $RoyaltyParams$_load
   DECLPROC $GetRoyaltyParams$_load
   DECLPROC $ReportRoyaltyParams$_store
   DECLPROC $ReportRoyaltyParams$_store_cell
+  DECLPROC $RoyaltyParams$_store
+  DECLPROC $RoyaltyParams$_load
   DECLPROC $Transfer$_store
   DECLPROC $Transfer$_store_cell
   DECLPROC $NftCollection$_store
@@ -245,23 +245,6 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  $RoyaltyParams$_store PROCINLINE:<{
-    s2 s3 XCHG2
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    SWAP
-    __tact_store_address INLINECALLDICT
-  }>
-  $RoyaltyParams$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    __tact_load_address INLINECALLDICT
-    s3 s3 s0 XCHG3
-  }>
   $GetRoyaltyParams$_load PROCINLINE:<{
     32 LDU
     SWAP
@@ -287,6 +270,23 @@ PROGRAM{
     4 -ROLL
     $ReportRoyaltyParams$_store INLINECALLDICT
     ENDC
+  }>
+  $RoyaltyParams$_store PROCINLINE:<{
+    s2 s3 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $RoyaltyParams$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    __tact_load_address INLINECALLDICT
+    s3 s3 s0 XCHG3
   }>
   $Transfer$_store PROCREF:<{
     1607220500 PUSHINT
@@ -725,7 +725,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d517155396e43624d4d47615533586b6d55774c414e734d5950334363634d4b6a56416f335a34663142796773} PUSHSLICE
+    x{697066733a2f2f516d5864446d36526667376f3335364635635869693644357a6853755061374b69776f7369506e68584e465a4e35} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

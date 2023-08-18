@@ -22,6 +22,42 @@
 }
 
 ;;
+;; Type: GetRoyaltyParams
+;; Header: 0x693d3950
+;; TLB: get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams
+;;
+
+(slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1765620048);
+    var v'query_id = sc_0~load_uint(64);
+    return (sc_0, (v'query_id));
+}
+
+;;
+;; Type: ReportRoyaltyParams
+;; Header: 0xa8cb00ad
+;; TLB: report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams
+;;
+
+builder $ReportRoyaltyParams$_store(builder build_0, (int, int, int, slice) v) inline {
+    var (v'query_id, v'numerator, v'denominator, v'destination) = v;
+    build_0 = store_uint(build_0, 2831876269, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_uint(v'numerator, 16);
+    build_0 = build_0.store_uint(v'denominator, 16);
+    build_0 = __tact_store_address(build_0, v'destination);
+    return build_0;
+}
+
+cell $ReportRoyaltyParams$_store_cell((int, int, int, slice) v) inline {
+    return $ReportRoyaltyParams$_store(begin_cell(), v).end_cell();
+}
+
+((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline {
+    return (query_id, numerator, denominator, destination);
+}
+
+;;
 ;; Type: CollectionData
 ;; TLB: _ next_item_index:int257 collection_content:^cell owner_address:address = CollectionData
 ;;
@@ -58,42 +94,6 @@ builder $RoyaltyParams$_store(builder build_0, (int, int, slice) v) inline {
 (int, int, slice) $RoyaltyParams$_to_external(((int, int, slice)) v) inline {
     var (v'numerator, v'denominator, v'destination) = v; 
     return (v'numerator, v'denominator, v'destination);
-}
-
-;;
-;; Type: GetRoyaltyParams
-;; Header: 0x693d3950
-;; TLB: get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams
-;;
-
-(slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 1765620048);
-    var v'query_id = sc_0~load_uint(64);
-    return (sc_0, (v'query_id));
-}
-
-;;
-;; Type: ReportRoyaltyParams
-;; Header: 0xa8cb00ad
-;; TLB: report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams
-;;
-
-builder $ReportRoyaltyParams$_store(builder build_0, (int, int, int, slice) v) inline {
-    var (v'query_id, v'numerator, v'denominator, v'destination) = v;
-    build_0 = store_uint(build_0, 2831876269, 32);
-    build_0 = build_0.store_uint(v'query_id, 64);
-    build_0 = build_0.store_uint(v'numerator, 16);
-    build_0 = build_0.store_uint(v'denominator, 16);
-    build_0 = __tact_store_address(build_0, v'destination);
-    return build_0;
-}
-
-cell $ReportRoyaltyParams$_store_cell((int, int, int, slice) v) inline {
-    return $ReportRoyaltyParams$_store(begin_cell(), v).end_cell();
-}
-
-((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline {
-    return (query_id, numerator, denominator, destination);
 }
 
 ;;
