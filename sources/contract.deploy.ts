@@ -15,8 +15,7 @@ import { NftCollection } from "./output/sample_NftCollection";
 
     // ===== Parameters =====
     // Replace owner with your address
-    // let owner = Address.parse("Your Address");
-    let owner = Address.parse("kQBXFiq2Oc88YmUSCmxXGyHDqeq4UYo3xCSJe2yAAsMja1-u");
+    let owner = Address.parse("Your Address");
 
     let init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
