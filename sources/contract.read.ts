@@ -12,7 +12,9 @@ import { NftCollection } from "./output/sample_NftCollection";
     });
 
     // Parameters
-    let collection_address = Address.parse("YOUR Collection ADDRESS");
+    // let collection_address = Address.parse("YOUR Collection ADDRESS");
+    let collection_address = Address.parse("kQDSs25avDnvA0NhMvqltaTwjQVcDfs-rslxiuEodBRjRl07");
+
     let contract_address = await NftCollection.fromAddress(collection_address);
     let client_open = client.open(contract_address);
 
