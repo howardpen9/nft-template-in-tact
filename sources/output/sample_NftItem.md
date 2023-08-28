@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: NftItem
-BOC Size: 1508 bytes
+BOC Size: 1511 bytes
 
 # Types
 Total Types: 13

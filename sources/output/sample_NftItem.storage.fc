@@ -11,10 +11,6 @@
     return (bounce, to, value, mode, body, null(), null());
 }
 
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_mode_value_body(slice to, int mode, int value, cell body) inline {
-    return (true, to, value, mode, body, null(), null());
-}
-
 ;;
 ;; Type: Transfer
 ;; Header: 0x5fcc3d14
