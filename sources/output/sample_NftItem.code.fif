@@ -36,7 +36,6 @@ PROGRAM{
   DECLPROC $Excesses$_constructor_query_id
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload
-  DECLPROC $SendParameters$_constructor_to_mode_value_body
   DECLPROC $ReportStaticData$_constructor_query_id_index_id_collection
   DECLPROC $NftItem$_internal_binary_Transfer
   DECLPROC $NftItem$_internal_binary_GetStaticData
@@ -576,13 +575,6 @@ PROGRAM{
   }>
   $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload PROCINLINE:<{
   }>
-  $SendParameters$_constructor_to_mode_value_body PROCINLINE:<{
-    TRUE
-    s0 s4 XCHG
-    s3 s3 XCHG2
-    PUSHNULL
-    PUSHNULL
-  }>
   $ReportStaticData$_constructor_query_id_index_id_collection PROCINLINE:<{
   }>
   $NftItem$_internal_binary_Transfer PROCINLINE:<{
@@ -600,13 +592,14 @@ PROGRAM{
     ADD
     SUB
     49280 PUSHINT
-    s13 s4 PUSH2
+    s13 s4 XCPU
     __tact_slice_eq_bits INLINECALLDICT
+    s1 s13 XCHG
     THROWANYIFNOT
-    s10 PUSH
+    s9 PUSH
     0 EQINT
     IF:<{
-      7 BLKDROP
+      6 BLKDROP
       s3 POP
       s4 POP
       TRUE
@@ -620,40 +613,42 @@ PROGRAM{
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
       $global_send INLINECALLDICT
     }>ELSE<{
-      s5 PUSH
+      s7 s4 PUSH2
       0 GTINT
       IF:<{
         2 PUSHINT
-        s10 s13 PUSH2
+        s10 s4 PUSH2
         FALSE
         s0 s10 XCHG
         $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload INLINECALLDICT
         $OwnershipAssigned$_store_cell INLINECALLDICT
-        s10 PUSH
-        s0 s4 XCHG
-        s3 s8 XCHG
+        s7 PUSH
+        s4 s11 XCHG
+        s0 s3 XCHG
         s9 s9 XCHG2
         $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
         $global_send INLINECALLDICT
       }>ELSE<{
-        s5 POP
-        s5 POP
+        s6 POP
+        s7 POP
       }>
-      4 ROLL
+      3 ROLL
+      s0 s6 XCHG
       $Context$_fun_readForwardFee INLINECALLDICT
+      s1 s7 XCHG
       SUB
       OVER
       ISNULL
       NOT
       IF:<{
-        s6 POP
-        2 PUSHINT
+        ROT
+        SUB
+        1 PUSHINT
         s0 s3 XCHG
         $Excesses$_constructor_query_id INLINECALLDICT
         $Excesses$_store_cell INLINECALLDICT
-        s3 s3 s0 XCHG3
-        s1 s6 XCHG
-        $SendParameters$_constructor_to_mode_value_body INLINECALLDICT
+        s1 s3 s0 XCHG3
+        $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
         $global_send INLINECALLDICT
       }>ELSE<{
         4 BLKDROP
@@ -667,7 +662,7 @@ PROGRAM{
     0 PUSHINT
     64 PUSHINT
     TRUE
-    s4 s8 s7 XCPU2
+    s4 s8 s9 XCPU2
     $ReportStaticData$_constructor_query_id_index_id_collection INLINECALLDICT
     $ReportStaticData$_store_cell INLINECALLDICT
     s3 s4 XCHG

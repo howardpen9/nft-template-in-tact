@@ -114,8 +114,5 @@ int $Context$_fun_readForwardFee((int, slice, int, slice) $self) impure inline_r
 ;; $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload
 ((int, slice, slice)) $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload(int query_id, slice prev_owner, slice forward_payload) inline;
 
-;; $SendParameters$_constructor_to_mode_value_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_mode_value_body(slice to, int mode, int value, cell body) inline;
-
 ;; $ReportStaticData$_constructor_query_id_index_id_collection
 ((int, int, slice)) $ReportStaticData$_constructor_query_id_index_id_collection(int query_id, int index_id, slice collection) inline;

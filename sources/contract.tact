@@ -161,6 +161,7 @@ contract NftItem {
                 body: Excesses { query_id: msg.query_id }.toCell() //0xd53276db
             });
         } else {
+            self.owner = msg.new_owner; // change current owner to the new_owner
             if (msg.forward_amount > 0) {
                 send(SendParameters{
                     to: msg.new_owner,
@@ -169,7 +170,7 @@ contract NftItem {
                     bounce: false,
                     body: OwnershipAssigned{
                         query_id: msg.query_id,
-                        prev_owner:  self.owner,
+                        prev_owner: ctx.sender,
                         forward_payload: msg.forward_payload
                     }.toCell()
                 }); 
@@ -178,11 +179,10 @@ contract NftItem {
             if (msg.response_destination != null) { 
                 send(SendParameters{ 
                     to: msg.response_destination,
-                    mode: SendIgnoreErrors,
-                    value: msgValue,
+                    value: msgValue - msg.forward_amount,
+                    mode: SendPayGasSeparately,
                     body: Excesses { query_id: msg.query_id }.toCell() // 0xd53276db
                 });
-                self.owner = msg.new_owner; // change current owner to the new_owner
             } 
         }
     }
@@ -197,7 +197,7 @@ contract NftItem {
             body: ReportStaticData{
                 query_id: msg.query_id,
                 index_id: self.item_index,
-                collection: self.owner
+                collection: self.collection_address
             }.toCell()
         });
     }

@@ -49,13 +49,13 @@
         $self'owner = $msg'new_owner;
         $global_send($SendParameters$_constructor_to_value_mode_body($msg'response_destination, 0, (2 + 64), $Excesses$_store_cell($Excesses$_constructor_query_id($msg'query_id))));
     } else {
+        $self'owner = $msg'new_owner;
         if (($msg'forward_amount > 0)) {
-            $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'new_owner, $msg'forward_amount, 2, false, $OwnershipAssigned$_store_cell($OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload($msg'query_id, $self'owner, $msg'forward_payload))));
+            $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'new_owner, $msg'forward_amount, 2, false, $OwnershipAssigned$_store_cell($OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload($msg'query_id, $ctx'sender, $msg'forward_payload))));
         }
         $msgValue = ($msgValue - $Context$_fun_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw)));
         if ((~ null?($msg'response_destination))) {
-            $global_send($SendParameters$_constructor_to_mode_value_body($msg'response_destination, 2, $msgValue, $Excesses$_store_cell($Excesses$_constructor_query_id($msg'query_id))));
-            $self'owner = $msg'new_owner;
+            $global_send($SendParameters$_constructor_to_value_mode_body($msg'response_destination, ($msgValue - $msg'forward_amount), 1, $Excesses$_store_cell($Excesses$_constructor_query_id($msg'query_id))));
         }
     }
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
@@ -65,7 +65,7 @@
     var ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized) = $self;
     var ($msg'query_id) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($ctx'sender, 0, 64, true, $ReportStaticData$_store_cell($ReportStaticData$_constructor_query_id_index_id_collection($msg'query_id, $self'item_index, $self'owner))));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($ctx'sender, 0, 64, true, $ReportStaticData$_store_cell($ReportStaticData$_constructor_query_id_index_id_collection($msg'query_id, $self'item_index, $self'collection_address))));
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized), ());
 }
 
