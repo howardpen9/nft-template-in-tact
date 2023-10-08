@@ -39,11 +39,11 @@
     var ($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized) = $self;
     var ($msg'query_id, $msg'new_owner, $msg'response_destination, $msg'custom_payload, $msg'forward_amount, $msg'forward_payload) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    throw_unless(49280, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     int $msgValue = $ctx'value;
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
     int $storageFee = (30000000 - min($tonBalanceBeforeMsg, 30000000));
     $msgValue = ($msgValue - ($storageFee + 30000000));
-    throw_unless(49280, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     if (($self'is_initialized == false)) {
         $self'is_initialized = true;
         $self'owner = $msg'new_owner;
