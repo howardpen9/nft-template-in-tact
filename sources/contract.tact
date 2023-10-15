@@ -2,7 +2,6 @@ const minTonsForStorage: Int = ton("0.03");
 const gasConsumption: Int = ton("0.03");
 
 contract NftCollection {
-
     next_item_index: Int as uint32 = 0;
     owner_address: Address;
     royalty_params: RoyaltyParams;                      
@@ -156,10 +155,8 @@ contract NftItem {
                 body: Excesses { query_id: msg.query_id }.toCell()
             });
         } else {
-            
             // change current owner to the new_owner
             self.owner = msg.new_owner; 
-
             if (msg.forward_amount > 0) {
                 send(SendParameters{
                     to: msg.new_owner,
@@ -173,7 +170,6 @@ contract NftItem {
                     }.toCell()
                 }); 
             }
-            
             msgValue = msgValue - ctx.readForwardFee(); 
             if (msg.response_destination != null) { 
                 send(SendParameters{ 
@@ -219,7 +215,6 @@ contract NftItem {
     }
 }
 // ---------------------------------------------------------------------------------------------------- //
-// [Collection Contract] -> Transfer -> OwnershipAssigned -> NFTExcesses
 message(0x5fcc3d14) Transfer { 
     query_id: Int as uint64;            
     new_owner: Address; 

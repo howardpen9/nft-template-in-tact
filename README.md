@@ -21,8 +21,6 @@ The repository contains a comprehensive collection of code files, documentation,
 
 ## More
 
-[https://docs.tact-lang.org/_next/static/media/banner.0c18b672.jpeg]
-
 For more information about this GitHub repository, or if you have any questions related to Tact, feel free to visit:
 
 -   https://t.me/ton101
