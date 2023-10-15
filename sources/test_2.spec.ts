@@ -1,5 +1,11 @@
 import { toNano, beginCell } from "ton";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton-community/sandbox";
+import {
+    Blockchain,
+    SandboxContract,
+    TreasuryContract,
+    printTransactionFees,
+    prettyLogTransactions,
+} from "@ton-community/sandbox";
 import "@ton-community/test-utils";
 
 import { NftCollection } from "./output/sample_NftCollection";
@@ -42,7 +48,7 @@ describe("contract", () => {
     });
 
     it("should deploy correctly", async () => {
-        const deploy_result = await collection.send(deployer.getSender(), { value: toNano(1) }, "Mint"); // Send Mint Transaction
+        const deploy_result = await collection.send(deployer.getSender(), { value: toNano(13) }, "Mint"); // Send Mint Transaction
         expect(deploy_result.transactions).toHaveTransaction({
             from: deployer.address,
             to: collection.address,
@@ -50,5 +56,8 @@ describe("contract", () => {
         });
 
         console.log("Next IndexID: " + (await collection.getGetCollectionData()).next_item_index);
+
+        console.log(printTransactionFees(deploy_result.transactions));
+        console.log(prettyLogTransactions(deploy_result.transactions));
     });
 });
