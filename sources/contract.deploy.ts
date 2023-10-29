@@ -1,4 +1,4 @@
-import { beginCell, contractAddress, toNano, Cell, Address } from "ton";
+import { beginCell, contractAddress, toNano, Address } from "ton";
 import { deploy } from "./utils/deploy";
 import { printAddress, printDeploy, printHeader } from "./utils/print";
 // ================================================================= //
@@ -8,6 +8,7 @@ import { NftCollection } from "./output/sample_NftCollection";
 (async () => {
     const OFFCHAIN_CONTENT_PREFIX = 0x01;
     const string_first = "https://s.getgems.io/nft-staging/c/628f6ab8077060a7a8d52d63/"; // Change to the content URL you prepared
+
     let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRefTail(string_first).endCell();
 
     // The Transaction body we want to pass to the smart contract
@@ -15,8 +16,9 @@ import { NftCollection } from "./output/sample_NftCollection";
 
     // ===== Parameters =====
     // Replace owner with your address
-    let owner = Address.parse("Your Address");
+    let owner = Address.parse("YOUR_ADDRESS_HERE");
 
+    // Prepare the initial code and data for the contract
     let init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
         numerator: 350n, // 350n = 35%
