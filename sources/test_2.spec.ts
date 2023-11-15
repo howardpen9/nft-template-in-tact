@@ -48,6 +48,8 @@ describe("contract", () => {
     });
 
     it("should deploy correctly", async () => {
+        let current_index = (await collection.getGetCollectionData()).next_item_index;
+
         const deploy_result = await collection.send(deployer.getSender(), { value: toNano(13) }, "Mint"); // Send Mint Transaction
         expect(deploy_result.transactions).toHaveTransaction({
             from: deployer.address,
@@ -55,9 +57,11 @@ describe("contract", () => {
             success: true,
         });
 
-        console.log("Next IndexID: " + (await collection.getGetCollectionData()).next_item_index);
+        let next_index = (await collection.getGetCollectionData()).next_item_index;
+        expect(next_index).toEqual(current_index + 1n);
+        // console.log("Next IndexID: " +);
 
-        console.log(printTransactionFees(deploy_result.transactions));
-        console.log(prettyLogTransactions(deploy_result.transactions));
+        // console.log(printTransactionFees(deploy_result.transactions));
+        // console.log(prettyLogTransactions(deploy_result.transactions));
     });
 });

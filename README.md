@@ -30,6 +30,8 @@ yarn read # The way to read the smart contract data after your deployed the code
 > [!WARNING]
 > Remember to change the parameter in `contract.deploy.ts` file before you run `yarn deploy`
 
+![Alt text](image.png)
+
 ## More
 
 For more information about this GitHub repository, or if you have any questions related to Tact, feel free to visit:
