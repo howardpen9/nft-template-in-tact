@@ -616,9 +616,9 @@ PROGRAM{
       s7 s4 PUSH2
       0 GTINT
       IF:<{
-        2 PUSHINT
+        3 PUSHINT
         s10 s4 PUSH2
-        FALSE
+        TRUE
         s0 s10 XCHG
         $OwnershipAssigned$_constructor_query_id_prev_owner_forward_payload INLINECALLDICT
         $OwnershipAssigned$_store_cell INLINECALLDICT
@@ -644,12 +644,14 @@ PROGRAM{
         s0 s6 XCHG2
         SUB
         1 PUSHINT
-        s0 s3 XCHG
+        TRUE
+        s0 s4 XCHG
         $Excesses$_constructor_query_id INLINECALLDICT
         $Excesses$_store_cell INLINECALLDICT
-        s3 s6 XCHG
-        s1 s6 s0 XCHG3
-        $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+        s4 s7 XCHG
+        s1 s3 s0 XCHG3
+        s1 s7 XCHG
+        $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
         $global_send INLINECALLDICT
       }>ELSE<{
         2DROP
