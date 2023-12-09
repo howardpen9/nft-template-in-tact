@@ -1,5 +1,4 @@
 import "./message.tact";
-
 const minTonsForStorage: Int = ton("0.03");
 const gasConsumption: Int = ton("0.03");
 
@@ -97,8 +96,6 @@ contract NftCollection {
     }
 }
 
-
-
 contract NftItem {
     collection_address: Address;
     item_index: Int; 
@@ -131,7 +128,7 @@ contract NftItem {
             send(SendParameters{
                 to: msg.response_destination,
                 value: 0,
-                mode:  SendIgnoreErrors + SendRemainingValue,
+                mode: SendIgnoreErrors + SendRemainingValue,
                 body: Excesses { query_id: msg.query_id }.toCell()
             });
         } else {
@@ -141,8 +138,8 @@ contract NftItem {
                 send(SendParameters{
                     to: msg.new_owner,
                     value: msg.forward_amount,
-                    mode: SendIgnoreErrors, 
-                    bounce: false,
+                    mode: SendIgnoreErrors + SendPayGasSeparately, 
+                    bounce: true,
                     body: OwnershipAssigned{
                         query_id: msg.query_id,
                         prev_owner: ctx.sender,
@@ -157,6 +154,7 @@ contract NftItem {
                     to: msg.response_destination,
                     value: msgValue - msg.forward_amount,
                     mode: SendPayGasSeparately,
+                    bounce: true,
                     body: Excesses { query_id: msg.query_id }.toCell()
                 });
             } 
