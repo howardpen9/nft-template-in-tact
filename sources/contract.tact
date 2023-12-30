@@ -43,6 +43,7 @@ contract NftCollection {
                 code: nft_init.code,
                 data: nft_init.data
             });
+        dump(self.next_item_index);
         self.next_item_index = self.next_item_index + 1;
     }
 

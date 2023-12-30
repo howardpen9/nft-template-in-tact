@@ -48,6 +48,9 @@ cell __tact_string_builder_end(tuple builders) inline;
 ;; __tact_string_builder_append
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
 
+;; __tact_int_to_string
+slice __tact_int_to_string(int src) inline_ref;
+
 ;; $GetRoyaltyParams$_load
 (slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline;
 

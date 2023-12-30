@@ -8,7 +8,7 @@ import {
 } from "@ton-community/sandbox";
 import "@ton-community/test-utils";
 
-import { NftCollection } from "./output/sample_NftCollection";
+import { NftCollection, RoyaltyParams } from "./output/sample_NftCollection";
 import { NftItem } from "./output/sample_NftItem";
 
 describe("contract", () => {
@@ -24,13 +24,15 @@ describe("contract", () => {
         blockchain = await Blockchain.create();
         deployer = await blockchain.treasury("deployer");
 
+        let royaltiesParam: RoyaltyParams = {
+            $$type: "RoyaltyParams",
+            numerator: 350n, // 350n = 35%
+            denominator: 1000n,
+            destination: deployer.address,
+        };
+
         collection = blockchain.openContract(
-            await NftCollection.fromInit(deployer.address, newContent, {
-                $$type: "RoyaltyParams",
-                numerator: 350n, // 350n = 35%
-                denominator: 1000n,
-                destination: deployer.address,
-            })
+            await NftCollection.fromInit(deployer.address, newContent, royaltiesParam)
         );
 
         const deploy_result = await collection.send(deployer.getSender(), { value: toNano(1) }, "Mint");
@@ -61,7 +63,7 @@ describe("contract", () => {
         expect(next_index).toEqual(current_index + 1n);
         // console.log("Next IndexID: " +);
 
-        // console.log(printTransactionFees(deploy_result.transactions));
-        // console.log(prettyLogTransactions(deploy_result.transactions));
+        printTransactionFees(deploy_result.transactions);
+        prettyLogTransactions(deploy_result.transactions);
     });
 });

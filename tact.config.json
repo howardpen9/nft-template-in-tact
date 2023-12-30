@@ -4,7 +4,8 @@
         "path": "./sources/contract.tact",
         "output": "./sources/output",
         "options": {
-            "external": true  
+            "external": true,  
+            "debug": true   
         }
     }]
 }
