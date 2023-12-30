@@ -30,6 +30,7 @@
     throw_unless(62742, ($self'next_item_index >= 0));
     var ($nft_init'code, $nft_init'data) = ($self'next_item_index, $self'owner_address, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content)~$NftCollection$_fun_getNftItemInit($self'next_item_index);
     $global_send($SendParameters$_constructor_to_value_bounce_mode_body_code_data($global_contractAddress(($nft_init'code, $nft_init'data)), $msgValue, false, 2, $Transfer$_store_cell($Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload(0, $sender, $self'owner_address, $global_emptyCell(), 0, $global_emptySlice())), $nft_init'code, $nft_init'data));
+    __tact_debug_str(__tact_int_to_string($self'next_item_index));
     $self'next_item_index = ($self'next_item_index + 1);
     return (($self'next_item_index, $self'owner_address, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content), ());
 }
@@ -128,12 +129,13 @@ _ supported_interfaces() method_id {
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
         "org.ton.chain.workchain.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXdDm6Rfg7o356F5cXii6D5zhSuPa7KiwosiPnhXNFZN5";
+    return "ipfs://QmXr2ZDGw8jHWRsRmNLAxGgEcnWMAQjM9PGvFtnBAy5GYe";
 }
 
 _ lazy_deployment_completed() method_id {

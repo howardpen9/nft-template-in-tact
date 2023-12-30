@@ -30,7 +30,7 @@ dotenv.config();
     console.log("Wallet address: ", wallet_contract.address);
 
     // Replace owner with your address
-    let owner = Address.parse("EQBBvGkvdAalLwkXgjLuVL-IgSvn-oPw_GLaOeUpu21Hvupz");
+    let owner = Address.parse("YOUR ADDRESS");
 
     // Prepare the initial code and data for the contract
     let init = await NftCollection.init(owner, newContent, {

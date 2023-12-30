@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: NftCollection
-BOC Size: 1695 bytes
+BOC Size: 1833 bytes
 
 # Types
 Total Types: 13
