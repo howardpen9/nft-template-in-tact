@@ -27,6 +27,9 @@ forall X -> X __tact_not_null(X x) inline;
 ;; __tact_context_get
 (int, slice, int, slice) __tact_context_get() inline;
 
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
 ;; __tact_store_bool
 builder __tact_store_bool(builder b, int v) inline;
 
@@ -48,9 +51,6 @@ cell __tact_string_builder_end(tuple builders) inline;
 ;; __tact_string_builder_append
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
 
-;; __tact_int_to_string
-slice __tact_int_to_string(int src) inline_ref;
-
 ;; $GetRoyaltyParams$_load
 (slice, ((int))) $GetRoyaltyParams$_load(slice sc_0) inline;
 
@@ -71,6 +71,12 @@ builder $Transfer$_store(builder build_0, (int, slice, slice, cell, int, slice) 
 
 ;; $Transfer$_store_cell
 cell $Transfer$_store_cell((int, slice, slice, cell, int, slice) v) inline;
+
+;; $EventMintRecord$_store
+builder $EventMintRecord$_store(builder build_0, (slice, int, int) v) inline;
+
+;; $EventMintRecord$_store_cell
+cell $EventMintRecord$_store_cell((slice, int, int) v) inline;
 
 ;; $NftCollection$_store
 builder $NftCollection$_store(builder build_0, (int, slice, (int, int, slice), cell) v) inline;
@@ -117,6 +123,9 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
+;; $global_emit
+() $global_emit(cell $body) impure inline;
+
 ;; $SendParameters$_constructor_to_value_bounce_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body_code_data(slice to, int value, int bounce, int mode, cell body, cell code, cell data) inline;
 
@@ -146,6 +155,9 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 
 ;; $NftCollection$_fun_royalty_params
 ((int, slice, (int, int, slice), cell), (int, int, slice)) $NftCollection$_fun_royalty_params((int, slice, (int, int, slice), cell) $self) impure inline_ref;
+
+;; $EventMintRecord$_constructor_minter_item_id_generate_number
+((slice, int, int)) $EventMintRecord$_constructor_minter_item_id_generate_number(slice minter, int item_id, int generate_number) inline;
 
 ;; $SendParameters$_constructor_to_value_mode_bounce_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;

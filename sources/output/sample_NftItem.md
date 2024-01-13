@@ -3,7 +3,7 @@ Contract: NftItem
 BOC Size: 1537 bytes
 
 # Types
-Total Types: 13
+Total Types: 14
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -56,6 +56,10 @@ Signature: `ReportStaticData{query_id:uint64,index_id:int257,collection:address}
 ## GetNftData
 TLB: `_ is_initialized:bool index:int257 collection_address:address owner_address:address individual_content:^cell = GetNftData`
 Signature: `GetNftData{is_initialized:bool,index:int257,collection_address:address,owner_address:address,individual_content:^cell}`
+
+## EventMintRecord
+TLB: `event_mint_record#29a14acb minter:address item_id:int257 generate_number:int257 = EventMintRecord`
+Signature: `EventMintRecord{minter:address,item_id:int257,generate_number:int257}`
 
 # Get Methods
 Total Get Methods: 1
