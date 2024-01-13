@@ -2,6 +2,12 @@ import "./message.tact";
 const minTonsForStorage: Int = ton("0.03");
 const gasConsumption: Int = ton("0.03");
 
+message EventMintRecord {
+    minter: Address;
+    item_id: Int;
+    generate_number: Int;
+}
+
 contract NftCollection {
     next_item_index: Int as uint32 = 0;
     owner_address: Address;
@@ -21,6 +27,13 @@ contract NftCollection {
         let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
         msgValue = msgValue - (storageFee + gasConsumption);
         self.mint(ctx.sender, msgValue);
+
+        emit(EventMintRecord{
+            minter: sender(), 
+            item_id: self.next_item_index, 
+            generate_number: nativeRandom() 
+        }.toCell());
+        
     }
 
     // ===== Private Methods ===== //
@@ -43,7 +56,7 @@ contract NftCollection {
                 code: nft_init.code,
                 data: nft_init.data
             });
-        dump(self.next_item_index);
+        // dump(self.next_item_index);
         self.next_item_index = self.next_item_index + 1;
     }
 
