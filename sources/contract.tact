@@ -11,7 +11,7 @@ message EventMintRecord {
 contract NftCollection {
     next_item_index: Int as uint32 = 0;
     owner_address: Address;
-    royalty_params: RoyaltyParams;                      
+    royalty_params: RoyaltyParams?;                      
     collection_content: Cell;   
 
     init(owner_address: Address, collection_content: Cell, royalty_params: RoyaltyParams){
@@ -69,8 +69,8 @@ contract NftCollection {
             bounce: false,
             body: ReportRoyaltyParams {
                 query_id: msg.query_id,
-                numerator:  self.royalty_params.numerator,
-                denominator: self.royalty_params.denominator,
+                numerator:  (self.royalty_params!!).numerator,
+                denominator: (self.royalty_params!!).denominator,
                 destination: self.owner_address
             }.toCell()
         });        
@@ -95,7 +95,7 @@ contract NftCollection {
     }
 
     get fun getNftItemInit(item_index: Int): StateInit {
-        return initOf NftItem(myAddress(), item_index, self.owner_address, self.collection_content);
+        return initOf NftItem(myAddress(), item_index);
     }
     
     get fun get_nft_content(index: Int, individual_content: Cell): Cell { 
@@ -106,37 +106,36 @@ contract NftCollection {
     }
 
     get fun royalty_params(): RoyaltyParams {
-        return self.royalty_params;
+        return self.royalty_params!!;
     }
 }
 
 contract NftItem {
     collection_address: Address;
     item_index: Int; 
-    owner: Address;
-    individual_content: Cell;
     is_initialized: Bool;
 
-    init(collection_address: Address, item_index: Int, owner: Address, individual_content: Cell){
+    owner: Address?;
+    individual_content: Cell?;
+
+    init(collection_address: Address, item_index: Int){
+        require(sender() == collection_address, "not from collection");
         self.collection_address = collection_address;
         self.item_index = item_index;
-        self.owner = collection_address;
-        self.individual_content = individual_content;
         self.is_initialized = false;
     }
 
     receive(msg: Transfer){
         let ctx: Context = context();
         
-        // Only Owner of the this NFT Item can transfer it.
-        require(ctx.sender == self.owner, "not owner");
-    
+        // require(ctx.sender == self.owner, "not owner");
         let msgValue: Int = ctx.value; // Check the gasCost for storage
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
         let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
         msgValue = msgValue - (storageFee + gasConsumption);
-
+        
         if (self.is_initialized == false) {  // Initial Transfer, aka the "Minting" of the NFT
+            require(ctx.sender == self.collection_address, "initialized tx need from collection");
             self.is_initialized = true;
             self.owner = msg.new_owner;
             send(SendParameters{
@@ -146,7 +145,6 @@ contract NftItem {
                 body: Excesses { query_id: msg.query_id }.toCell()
             });
         } else {
-            
             self.owner = msg.new_owner;  // change current owner to the new_owner
             if (msg.forward_amount > 0) {
                 send(SendParameters{
@@ -193,7 +191,7 @@ contract NftItem {
     // --------- Get Function  --------- //
     get fun get_nft_data(): GetNftData {
         let b: StringBuilder = beginString();
-        let collectionData: String = self.individual_content.asSlice().asString();
+        let collectionData: String = (self.individual_content!!).asSlice().asString();
         b.append(collectionData);
         b.append(self.item_index.toString());
         b.append(".json");
@@ -202,7 +200,7 @@ contract NftItem {
             is_initialized: self.is_initialized, 
             index: self.item_index, 
             collection_address: self.collection_address, 
-            owner_address: self.owner,
+            owner_address: self.owner!!,
             individual_content: b.toCell()
         };
     }
