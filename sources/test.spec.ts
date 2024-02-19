@@ -1,12 +1,12 @@
-import { toNano, beginCell } from "ton";
+import { toNano, beginCell } from "@ton/ton";
 import {
     Blockchain,
     SandboxContract,
     TreasuryContract,
     printTransactionFees,
     prettyLogTransactions,
-} from "@ton-community/sandbox";
-import "@ton-community/test-utils";
+} from "@ton/sandbox";
+import "@ton/test-utils";
 import { printSeparator } from "./utils/print";
 import { NftCollection, RoyaltyParams, loadEventMintRecord } from "./output/sample_NftCollection";
 import { NftItem } from "./output/sample_NftItem";

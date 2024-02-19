@@ -1,4 +1,4 @@
-import { beginCell, contractAddress, toNano, Address } from "ton";
+import { beginCell, contractAddress, toNano, Address } from "@ton/ton";
 import { deploy } from "./utils/deploy";
 import { printAddress, printDeploy, printHeader } from "./utils/print";
 // ================================================================= //
@@ -12,7 +12,7 @@ import { NftCollection } from "./output/sample_NftCollection";
 
     // ===== Parameters =====
     // Replace owner with your address
-    let owner = Address.parse("YOUR ADDRESS");
+    let owner = Address.parse("YOUR ADDRESS"); // 🔴🔴🔴
 
     // Prepare the initial code and data for the contract
     let init = await NftCollection.init(owner, newContent, {
@@ -23,7 +23,7 @@ import { NftCollection } from "./output/sample_NftCollection";
     });
 
     let address = contractAddress(0, init);
-    let deployAmount = toNano("0.1");
+    let deployAmount = toNano("0.15");
     let testnet = true;
 
     // The Transaction body we want to pass to the smart contract

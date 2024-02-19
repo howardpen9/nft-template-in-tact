@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, contractAddress, storeStateInit } from "ton";
+import { Address, beginCell, Cell, contractAddress, storeStateInit } from "@ton/ton";
 import qs from "qs";
 import base64url from "base64url";
 

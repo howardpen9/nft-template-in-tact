@@ -1,19 +1,27 @@
+import {
+    Address,
+    beginCell,
+    contractAddress,
+    toNano,
+    TonClient4,
+    internal,
+    fromNano,
+    WalletContractV4,
+} from "@ton/ton";
+import { deploy } from "./utils/deploy";
+import { printAddress, printDeploy, printHeader, printSeparator } from "./utils/print";
+import { mnemonicToPrivateKey } from "@ton/crypto";
+import * as dotenv from "dotenv";
+dotenv.config();
 // ================================================================= //
 import { NftCollection } from "./output/sample_NftCollection";
 import { NftItem } from "./output/sample_NftItem";
-// ================================================================= //
-import { Address, beginCell, contractAddress, toNano, TonClient4, internal, fromNano, WalletContractV4 } from "ton";
-import { deploy } from "./utils/deploy";
-import { printAddress, printDeploy, printHeader, printSeparator } from "./utils/print";
-import { mnemonicToPrivateKey } from "ton-crypto";
-import * as dotenv from "dotenv";
-dotenv.config();
 // ================================================================= //
 
 (async () => {
     // Create client for testnet sandboxv4 API - alternative endpoint
     const client4 = new TonClient4({
-        endpoint: "https://sandbox-v4.tonhubapi.com",
+        endpoint: "https://sandbox-v4.tonhubapi.com", // Test-net
     });
 
     // Parameters for NFTs
@@ -30,7 +38,7 @@ dotenv.config();
     console.log("Wallet address: ", wallet_contract.address);
 
     // Replace owner with your address
-    let owner = Address.parse("YOUR ADDRESS");
+    let owner = wallet.address;
 
     // Prepare the initial code and data for the contract
     let init = await NftCollection.init(owner, newContent, {

@@ -1,6 +1,6 @@
 import "./message.tact";
-const minTonsForStorage: Int = ton("0.03");
-const gasConsumption: Int = ton("0.03");
+const minTonsForStorage: Int = ton("0.02");
+const gasConsumption: Int = ton("0.02");
 
 message EventMintRecord {
     minter: Address;
@@ -49,7 +49,7 @@ contract NftCollection {
                     query_id: 0,
                     new_owner: sender,
                     response_destination: self.owner_address,
-                    custom_payload: emptyCell(),
+                    custom_payload: self.collection_content,
                     forward_amount: 0,
                     forward_payload: emptySlice()
                 }.toCell(),
@@ -127,8 +127,7 @@ contract NftItem {
 
     receive(msg: Transfer){
         let ctx: Context = context();
-        
-        // require(ctx.sender == self.owner, "not owner");
+
         let msgValue: Int = ctx.value; // Check the gasCost for storage
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
         let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
@@ -138,19 +137,21 @@ contract NftItem {
             require(ctx.sender == self.collection_address, "initialized tx need from collection");
             self.is_initialized = true;
             self.owner = msg.new_owner;
+            self.individual_content = msg.custom_payload;
             send(SendParameters{
-                to: msg.response_destination,
-                value: 0,
-                mode: SendIgnoreErrors + SendRemainingValue,
+                to: msg.response_destination!!,
+                value: msgValue,
+                mode: SendPayGasSeparately,
                 body: Excesses { query_id: msg.query_id }.toCell()
             });
         } else {
+            require(ctx.sender == self.owner!!, "not owner");
             self.owner = msg.new_owner;  // change current owner to the new_owner
             if (msg.forward_amount > 0) {
                 send(SendParameters{
                     to: msg.new_owner,
                     value: msg.forward_amount,
-                    mode: SendIgnoreErrors + SendPayGasSeparately, 
+                    mode:  SendPayGasSeparately, 
                     bounce: true,
                     body: OwnershipAssigned{
                         query_id: msg.query_id,
@@ -163,7 +164,7 @@ contract NftItem {
             msgValue = msgValue - ctx.readForwardFee(); 
             if (msg.response_destination != null) { 
                 send(SendParameters{ 
-                    to: msg.response_destination,
+                    to: msg.response_destination!!,
                     value: msgValue - msg.forward_amount,
                     mode: SendPayGasSeparately,
                     bounce: true,
